@@ -10,94 +10,170 @@
 # What this script does:
 #   1. Ensures RPM Fusion nonfree repo is enabled
 #   2. Installs akmod-nvidia (proprietary NVIDIA kernel module)
-#   3. Instructs on the two-reboot process required to complete the switch
+#   3. Blacklists nouveau and rebuilds initramfs
+#   4. Instructs on the two-reboot process required to complete the switch
+#
+# Usage:
+#   ./user-manual-install-nvidia-driver.sh                # interactive
+#   ./user-manual-install-nvidia-driver.sh --no-prompt    # non-interactive, idempotent
+#   ./user-manual-install-nvidia-driver.sh --dry-run      # show what would happen, change nothing
 
 set -euo pipefail
 
-# --- helpers -----------------------------------------------------------------
+# ── Flag parsing ─────────────────────────────────────────────────────────────
+_DRY_RUN=0
+for _arg in "$@"; do
+  case "$_arg" in
+    --no-prompt) export RUNTOOLS_AS_NONINTERACTIVE=1 ;;
+    --dry-run)   _DRY_RUN=1 ;;
+    -h|--help)
+      sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
+      exit 0
+      ;;
+    *)
+      echo "Unknown argument: $_arg" >&2
+      echo "Run '$0 --help' for usage." >&2
+      exit 64
+      ;;
+  esac
+done
 
-info()  { echo "[INFO]  $*"; }
-warn()  { echo "[WARN]  $*"; }
-die()   { echo "[ERROR] $*" >&2; exit 1; }
+# Auto-detect non-TTY (piped, scheduled) execution → behave non-interactively.
+[ -t 1 ] || export RUNTOOLS_AS_NONINTERACTIVE=1
 
-require_root() {
-    [[ $EUID -eq 0 ]] || die "This script must be run as root (use sudo)."
+# ── Helpers ──────────────────────────────────────────────────────────────────
+info()   { echo "[INFO]  $*"; }
+warn()   { echo "[WARN]  $*"; }
+die()    { echo "[ERROR] $*" >&2; exit 1; }
+dryrun() { [ "$_DRY_RUN" -eq 1 ]; }
+
+# Read a one-character answer with a 30s timeout. Echoes the chosen char.
+# In non-interactive mode, echoes the default without prompting.
+ask() {
+  local prompt="$1" default="$2" answer
+  if [ "${RUNTOOLS_AS_NONINTERACTIVE:-0}" = "1" ]; then
+    echo "$default"
+    return
+  fi
+  read -r -t 30 -p "  $prompt (auto-$default in 30s): " answer || answer=""
+  echo "${answer:-$default}"
 }
 
-# --- checks ------------------------------------------------------------------
+# Re-exec under sudo if not already root. In dry-run, stay unprivileged
+# (state-checking commands all work without root; only writes need it).
+require_root() {
+  if [ "$EUID" -ne 0 ]; then
+    if dryrun; then
+      info "[DRY-RUN] would re-exec under sudo. Continuing as $(id -un) for state checks."
+      return
+    fi
+    info "Re-executing under sudo to gain root privileges..."
+    exec sudo -E "$0" "$@"
+  fi
+}
 
-require_root
-
-# Confirm this is Fedora
+# ── Pre-flight ───────────────────────────────────────────────────────────────
 if ! grep -q "^ID=fedora" /etc/os-release 2>/dev/null; then
-    die "This script is intended for Fedora only."
+  die "This script targets Fedora. /etc/os-release does not look like Fedora."
 fi
+
+require_root "$@"
 
 FEDORA_VERSION=$(rpm -E %fedora)
-info "Detected Fedora $FEDORA_VERSION"
+info "Detected Fedora $FEDORA_VERSION."
+dryrun && warn "Running in --dry-run mode; no changes will be made."
 
-# --- RPM Fusion nonfree repo -------------------------------------------------
+# ── Confirmation gate (only on first-time install) ───────────────────────────
+if ! rpm -q akmod-nvidia &>/dev/null && ! modinfo -F version nvidia &>/dev/null; then
+  warn "About to install proprietary NVIDIA driver, blacklist nouveau, and rebuild initramfs."
+  warn "Two reboots may be required (see done-message)."
+  case "$(ask 'Continue? [Y/n/q]' 'y')" in
+    [Nn]*|[Qq]*) die "Aborted by user." ;;
+    *) ;;
+  esac
+fi
 
-if ! rpm -q rpmfusion-nonfree-release &>/dev/null; then
-    info "Adding RPM Fusion nonfree repository..."
+# ── Step 1: RPM Fusion nonfree repo ──────────────────────────────────────────
+if rpm -q rpmfusion-nonfree-release &>/dev/null; then
+  info "RPM Fusion nonfree repo already installed — skipping."
+else
+  info "Adding RPM Fusion nonfree repository..."
+  if dryrun; then
+    info "[DRY-RUN] would run: dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
+  else
     dnf install -y \
-        "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
-else
-    info "RPM Fusion nonfree repo already installed — skipping."
+      "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
+  fi
 fi
 
-# --- Install akmod-nvidia ----------------------------------------------------
-
+# ── Step 2: Install akmod-nvidia ─────────────────────────────────────────────
 if modinfo -F version nvidia &>/dev/null; then
-    CURRENT=$(modinfo -F version nvidia)
-    info "Proprietary NVIDIA driver already installed (version $CURRENT) — skipping install."
+  CURRENT=$(modinfo -F version nvidia)
+  info "Proprietary NVIDIA driver already installed (version $CURRENT) — skipping install."
 else
-    info "Installing akmod-nvidia..."
+  info "Installing akmod-nvidia..."
+  if dryrun; then
+    info "[DRY-RUN] would run: dnf install -y akmod-nvidia && akmods --force"
+  else
     dnf install -y akmod-nvidia
-
-    info "Waiting for kernel module to build (this can take a few minutes)..."
-    # akmods builds the module in the background; wait for it to finish
-    akmods --force
-    modinfo -F version nvidia \
-        && info "NVIDIA module built successfully." \
-        || warn "Module may not have finished building yet — verify after first reboot."
+    info "Building kernel module (this can take a few minutes)..."
+    akmods --force || true
+    if modinfo -F version nvidia &>/dev/null; then
+      info "NVIDIA module built successfully."
+    else
+      warn "Module did not finish building yet — akmod will retry on first reboot."
+    fi
+  fi
 fi
 
-# --- Disable nouveau ---------------------------------------------------------
-
+# ── Step 3: Blacklist nouveau ────────────────────────────────────────────────
 MODPROBE_CONF=/etc/modprobe.d/nvidia.conf
 
-if ! grep -q "blacklist nouveau" "$MODPROBE_CONF" 2>/dev/null; then
-    info "Blacklisting nouveau driver..."
+if grep -q "blacklist nouveau" "$MODPROBE_CONF" 2>/dev/null; then
+  info "nouveau already blacklisted in $MODPROBE_CONF — skipping."
+else
+  info "Blacklisting nouveau driver in $MODPROBE_CONF..."
+  if dryrun; then
+    info "[DRY-RUN] would write blacklist file."
+  else
     cat > "$MODPROBE_CONF" <<'EOF'
 # Disable the nouveau open-source NVIDIA driver so the proprietary
 # akmod-nvidia driver is used exclusively.
 blacklist nouveau
 options nouveau modeset=0
 EOF
-else
-    info "nouveau already blacklisted in $MODPROBE_CONF — skipping."
+  fi
 fi
 
-# Rebuild initramfs so the blacklist takes effect on next boot
+# ── Step 4: Rebuild initramfs ────────────────────────────────────────────────
 info "Rebuilding initramfs..."
-dracut --force
+if dryrun; then
+  info "[DRY-RUN] would run: dracut --force"
+else
+  dracut --force
+fi
 
-# --- Done --------------------------------------------------------------------
-
+# ── Done ─────────────────────────────────────────────────────────────────────
 echo ""
-echo "========================================================"
-echo " NVIDIA driver setup complete."
-echo "========================================================"
-echo ""
-echo " Next steps:"
-echo "   1. Reboot now.  (First boot: akmods may rebuild the module)"
-echo "   2. After login, confirm the driver loaded:"
-echo "        modinfo -F version nvidia"
-echo "        lsmod | grep nvidia"
-echo "   3. If the above shows the driver, suspend/resume should"
-echo "      now work correctly for all monitors."
-echo ""
-echo " If you still have issues after rebooting, check:"
-echo "   journalctl -b 0 -k | grep -i nvidia"
-echo "========================================================"
+if dryrun; then
+  info "Dry run complete. No changes were made."
+else
+  echo "========================================================"
+  echo " NVIDIA driver setup complete."
+  echo "========================================================"
+  echo ""
+  echo " Next steps:"
+  echo "   1. Reboot now. On first boot akmod-nvidia may still be"
+  echo "      compiling the module — if 'modinfo -F version nvidia'"
+  echo "      reports no module, wait a few minutes and reboot a"
+  echo "      second time so the freshly-built module is loaded."
+  echo "   2. After login, confirm the driver loaded:"
+  echo "        modinfo -F version nvidia"
+  echo "        lsmod | grep nvidia"
+  echo "   3. If the above shows the driver, suspend/resume should"
+  echo "      now work correctly for all monitors."
+  echo ""
+  echo " Troubleshooting:"
+  echo "   journalctl -b 0 -k | grep -i nvidia"
+  echo "========================================================"
+fi
