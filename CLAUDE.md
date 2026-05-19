@@ -10,6 +10,10 @@ Current scripts:
 
 - `user-manual-install-nvidia-driver.sh` — proprietary NVIDIA driver via RPM Fusion + akmod-nvidia; fixes DisplayPort retrain-after-suspend on Blackwell GPUs (RTX 5070 Ti / GB203). Auto-sudo, --dry-run / --no-prompt.
 - `user-manual-install-vscode.sh` — Visual Studio Code via Microsoft's RPM repo. Auto-sudo, --dry-run / --no-prompt.
+- `user-manual-install-modern-cli-tools.sh` — modern CLI replacements (eza/bat/fd-find/zoxide/git-delta/direnv/fzf/ripgrep/nvtop) + zsh via dnf. Idempotent per-package via `rpm -q`. Auto-sudo, --dry-run / --no-prompt.
+- `user-manual-install-starship.sh` — starship cross-shell prompt to `~/.local/bin/` via the official installer. No sudo. --dry-run / --no-prompt.
+- `user-manual-install-zsh-plugins.sh` — clone zsh-autosuggestions / zsh-syntax-highlighting / zsh-completions into `~/.config/zsh/plugins/`. No sudo. --dry-run / --no-prompt.
+- `user-manual-configure-shell-to-zsh.sh` — symlink `~/.zshrc` → dotfiles repo, add `shell /bin/zsh` to kitty `system.conf` (works around the `$SHELL`-frozen-after-chsh gotcha), and `chsh -s /bin/zsh`. No auto-sudo. --dry-run / --no-prompt (chsh step skipped in --no-prompt because PAM needs an interactive password). Takes `--dotfiles-dir <path>` to override the default (`~/projects/repos/dotfiles`).
 
 ## Memory Location
 
