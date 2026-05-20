@@ -14,6 +14,7 @@ Current scripts:
 - `user-manual-install-starship.sh` — starship cross-shell prompt to `~/.local/bin/` via the official installer. No sudo. --dry-run / --no-prompt.
 - `user-manual-install-zsh-plugins.sh` — clone zsh-autosuggestions / zsh-syntax-highlighting / zsh-completions into `~/.config/zsh/plugins/`. No sudo. --dry-run / --no-prompt.
 - `user-manual-configure-shell-to-zsh.sh` — symlink `~/.zshrc` → dotfiles repo, add `shell /bin/zsh` to kitty `system.conf` (works around the `$SHELL`-frozen-after-chsh gotcha), and `chsh -s /bin/zsh`. No auto-sudo. --dry-run / --no-prompt (chsh step skipped in --no-prompt because PAM needs an interactive password). Takes `--dotfiles-dir <path>` to override the default (`~/projects/repos/dotfiles`).
+- `user-manual-deploy-dotfiles.sh` — walk the dotfiles repo and symlink every regular file (excluding `.git/`, `.gitignore`, `README.md`, `CLAUDE.md`) into the matching path under `~/`. No sudo. --dry-run / --no-prompt / --dotfiles-dir. Idempotent (per-file skip-if-correct / prompt-and-backup / warn-and-skip).
 
 ## Memory Location
 

@@ -45,3 +45,22 @@ One-off scripts and notes for setting up a Fedora workstation.
   gotcha), and run `chsh -s /bin/zsh`. The chsh step prompts for the user's
   password via PAM; it's skipped in `--no-prompt` mode with a warning.
   Supports `--dry-run` and `--no-prompt`.
+
+- [`user-manual-deploy-dotfiles.sh`](user-manual-deploy-dotfiles.sh) — walk the
+  dotfiles repo (default: `~/projects/repos/dotfiles`) and symlink every
+  regular file into the matching path under `~/`. So `<repo>/.zshrc` →
+  `~/.zshrc`, `<repo>/.config/kitty/kitty.conf` → `~/.config/kitty/kitty.conf`,
+  and so on. Skips `.git/`, `.gitignore`, `README.md`, `CLAUDE.md`. Per file:
+  silent skip if already a correct symlink, prompt+back-up-and-replace if a
+  regular file exists, warn+skip on conflicting symlink. No sudo. Supports
+  `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`.
+
+  Recommended run order (fresh Fedora bootstrap):
+
+  1. `user-manual-install-modern-cli-tools.sh`
+  2. `user-manual-install-starship.sh`
+  3. `user-manual-install-zsh-plugins.sh`
+  4. Clone the dotfiles repo to `~/projects/repos/dotfiles/`
+  5. `user-manual-deploy-dotfiles.sh`
+  6. `user-manual-configure-shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
+     are no-ops at this point because step 5 already deployed them)
