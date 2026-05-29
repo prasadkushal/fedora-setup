@@ -163,14 +163,22 @@ existing_owners="$(awk '
 ' "$SHORTCUTS_FILE" 2>/dev/null || true)"
 if [ -n "$existing_owners" ]; then
   warn "Other services also bind $CHORD; Plasma may surface a conflict:"
-  printf '        %s\n' $existing_owners >&2
+  while IFS= read -r owner; do
+    [ -n "$owner" ] && printf '        %s\n' "$owner" >&2
+  done <<< "$existing_owners"
 fi
 
 # ── Step 3: Best-effort reload ───────────────────────────────────────────────
 if dryrun; then
   info "[DRY-RUN] would restart kded6 (which hosts the global shortcut daemon)"
 else
-  if command -v kquitapp6 >/dev/null && pgrep -x kded6 >/dev/null; then
+  # Prefer letting systemd's user manager bounce the unit (newer Plasma 6
+  # setups run kded6 as plasma-kded6.service). try-restart is a no-op if the
+  # unit isn't loaded, so it's safe to attempt unconditionally.
+  if command -v systemctl >/dev/null \
+     && systemctl --user try-restart plasma-kded6.service >/dev/null 2>&1; then
+    info "Restarted plasma-kded6.service via systemctl --user."
+  elif command -v kquitapp6 >/dev/null && pgrep -x kded6 >/dev/null; then
     info "Restarting kded6 (hosts the global shortcut daemon in Plasma 6)..."
     kquitapp6 kded6 >/dev/null 2>&1 || warn "kquitapp6 kded6 failed; continuing."
     # kded6 is started by Plasma's session manager (systemd user units in

@@ -134,8 +134,15 @@ if grep -q "blacklist nouveau" "$MODPROBE_CONF" 2>/dev/null; then
 else
   info "Blacklisting nouveau driver in $MODPROBE_CONF..."
   if dryrun; then
+    [ -e "$MODPROBE_CONF" ] && info "[DRY-RUN] would back up existing $MODPROBE_CONF → ${MODPROBE_CONF}.<timestamp>.bak"
     info "[DRY-RUN] would write blacklist file."
   else
+    if [ -e "$MODPROBE_CONF" ]; then
+      ts=$(date +%Y-%m-%dT%H%M)
+      bak="${MODPROBE_CONF}.${ts}.bak"
+      cp -a "$MODPROBE_CONF" "$bak"
+      info "Backed up existing $MODPROBE_CONF → $bak"
+    fi
     cat > "$MODPROBE_CONF" <<'EOF'
 # Disable the nouveau open-source NVIDIA driver so the proprietary
 # akmod-nvidia driver is used exclusively.

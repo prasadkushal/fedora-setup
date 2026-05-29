@@ -79,6 +79,9 @@ ask() {
 # ── Pre-flight ───────────────────────────────────────────────────────────────
 [ "$EUID" -eq 0 ] && die "Don't run this as root — everything goes into your \$HOME."
 [ -d "$DOTFILES_DIR" ] || die "Dotfiles dir '$DOTFILES_DIR' not found. Pass --dotfiles-dir=<path> to override."
+# Canonicalize to an absolute, symlink-resolved path so the prefix-strip below
+# (${source_abs#$DOTFILES_DIR/}) matches literally rather than as a glob pattern.
+DOTFILES_DIR="$(cd "$DOTFILES_DIR" && pwd)"
 [ -d "$DOTFILES_DIR/.git" ] || warn "$DOTFILES_DIR is not a git repo. Continuing anyway."
 
 dryrun && warn "Running in --dry-run mode; no changes will be made."
@@ -95,7 +98,7 @@ count_replace=0
 count_warn=0
 
 while IFS= read -r -d '' source_abs; do
-  rel="${source_abs#$DOTFILES_DIR/}"
+  rel="${source_abs#"$DOTFILES_DIR"/}"
   target="$HOME/$rel"
   target_dir="$(dirname "$target")"
 
