@@ -173,10 +173,14 @@ if dryrun; then
   info "[DRY-RUN] would restart kded6 (which hosts the global shortcut daemon)"
 else
   # Prefer letting systemd's user manager bounce the unit (newer Plasma 6
-  # setups run kded6 as plasma-kded6.service). try-restart is a no-op if the
-  # unit isn't loaded, so it's safe to attempt unconditionally.
+  # setups run kded6 as plasma-kded6.service). Only take this path when the
+  # unit actually exists AND is active: `try-restart` exits 0 even when the
+  # unit isn't loaded, which would otherwise swallow the kquitapp6 fallback
+  # below and report a restart that never happened.
   if command -v systemctl >/dev/null \
-     && systemctl --user try-restart plasma-kded6.service >/dev/null 2>&1; then
+     && systemctl --user list-unit-files plasma-kded6.service >/dev/null 2>&1 \
+     && systemctl --user is-active --quiet plasma-kded6.service \
+     && systemctl --user restart plasma-kded6.service >/dev/null 2>&1; then
     info "Restarted plasma-kded6.service via systemctl --user."
   elif command -v kquitapp6 >/dev/null && pgrep -x kded6 >/dev/null; then
     info "Restarting kded6 (hosts the global shortcut daemon in Plasma 6)..."
