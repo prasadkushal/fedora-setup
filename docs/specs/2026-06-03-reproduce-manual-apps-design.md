@@ -142,8 +142,19 @@ version pinning — consistent with existing scripts).
   byproducts, not apps).
 - No version pinning — latest-from-source, matching existing scripts.
 
-## Open items to confirm at implementation
+## Open items — resolved during implementation
 
-- Exact `claude` installer URL/flags (native installer vs npm).
-- Exact npm package name for `codex` (`@openai/codex` assumed).
-- Whether flatpaks should default to system or `--user` (spec assumes system).
+- `claude` installer: the **official native installer**
+  (`curl -fsSL https://claude.ai/install.sh | bash`), confirmed by the live
+  install layout (`~/.local/share/claude/versions/<v>` symlinked from
+  `~/.local/bin/claude`). Not npm.
+- `codex` npm package: confirmed **`@openai/codex`** (valid; installed globally
+  alongside `firebase-tools`).
+- Flatpak scope: defaults to **system** install (auto-sudo); a `--user` flag
+  flips to per-user.
+
+## Post-implementation additions
+
+- `rmapi` (reMarkable CLI) was in the workstation inventory but initially omitted;
+  added later as `user-manual-install-rmapi.sh` (downloads the maintained
+  `ddvk/rmapi` release to `~/.local/bin`) and appended to `install-apps.sh`.

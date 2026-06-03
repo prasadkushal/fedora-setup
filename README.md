@@ -123,16 +123,17 @@ Or run the five individually, in this order:
   `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`. Run this on each peer
   machine to pull the other's committed dotfiles changes.
 
-  Recommended run order (fresh Fedora bootstrap) — or just run
-  `user-manual-bootstrap-fedora.sh`, which does steps 1–3, 5, 6 for you:
+**Recommended manual run order** for the shell environment (fresh machine) — or
+just run `user-manual-setup-all.sh` (whole machine) or
+`user-manual-bootstrap-fedora.sh` (shell only, which does steps 1–3, 5, 6):
 
-  1. `user-manual-install-modern-cli-tools.sh`
-  2. `user-manual-install-starship.sh`
-  3. `user-manual-install-zsh-plugins.sh`
-  4. Clone the dotfiles repo to `~/projects/repos/dotfiles/`
-  5. `user-manual-deploy-dotfiles.sh`
-  6. `user-manual-configure-shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
-     are no-ops at this point because step 5 already deployed them)
+1. `user-manual-install-modern-cli-tools.sh`
+2. `user-manual-install-starship.sh`
+3. `user-manual-install-zsh-plugins.sh`
+4. Clone the dotfiles repo to `~/projects/repos/dotfiles/`
+5. `user-manual-deploy-dotfiles.sh`
+6. `user-manual-configure-shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
+   are no-ops at this point because step 5 already deployed them)
 
 ### Applications
 
@@ -142,8 +143,8 @@ one orchestrator (or run the individual installers). NVIDIA is excluded
 [`docs/specs/2026-06-03-reproduce-manual-apps-design.md`](docs/specs/2026-06-03-reproduce-manual-apps-design.md).
 
 - [`user-manual-install-apps.sh`](user-manual-install-apps.sh) — orchestrator.
-  Runs the seven app installers below in order (docker → chrome → mullvad →
-  flatpaks → node/npm-globals → uv → claude), gating each step and passing
+  Runs the eight app installers below in order (docker → chrome → mullvad →
+  flatpaks → node/npm-globals → uv → claude → rmapi), gating each step and passing
   through `--dry-run` / `--no-prompt`. Runs as your user; each child elevates
   itself if it needs root. Mirrors `user-manual-bootstrap-fedora.sh`.
 
@@ -177,3 +178,8 @@ one orchestrator (or run the individual installers). NVIDIA is excluded
 - [`user-manual-install-claude.sh`](user-manual-install-claude.sh) — the Claude
   Code CLI via its official native installer, to `~/.local/bin`. No sudo.
   `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-rmapi.sh`](user-manual-install-rmapi.sh) — the `rmapi`
+  reMarkable CLI: downloads the latest `ddvk/rmapi` release (the maintained fork)
+  for your arch and installs it to `~/.local/bin`. No sudo; refuses root;
+  idempotent (re-download prompt if already present). `--dry-run` / `--no-prompt`.

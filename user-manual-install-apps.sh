@@ -11,7 +11,7 @@
 #   ./user-manual-install-apps.sh --dry-run       # preview (passed to children)
 #   ./user-manual-install-apps.sh --no-prompt     # run all 7, no gating
 #
-# Why no auto-sudo here: uv and claude children refuse to run as root;
+# Why no auto-sudo here: uv, claude, and rmapi children refuse to run as root;
 # docker/chrome/mullvad/node children self-elevate when they need root.
 # Running this orchestrator under sudo would break the user-level installs.
 
@@ -56,6 +56,7 @@ _steps=(
   "user-manual-install-node-and-npm-globals.sh"
   "user-manual-install-uv.sh"
   "user-manual-install-claude.sh"
+  "user-manual-install-rmapi.sh"
 )
 
 # ── Dependency check: every child must exist and be executable ────────────────
