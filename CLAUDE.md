@@ -28,6 +28,18 @@ Project memory is stored in the claude-setup repo, not in Claude Code's auto-gen
 
 (and the files it references in that directory)
 
+## Docs
+
+Design specs live in `docs/specs/`, named `YYYY-MM-DD-<topic>-design.md` (date
+prefix sorts chronologically and says what each doc is without opening it —
+same philosophy as the `user-manual-*` script names). Write a spec there before
+implementing any multi-script feature; keep it updated as the source of truth
+for that decision. Current specs:
+
+- `docs/specs/2026-06-03-reproduce-manual-apps-design.md` — reproduce the
+  workstation's manually-installed apps (Docker/Chrome/Mullvad, flatpaks, CLI
+  tools) on peer machines.
+
 ## Conventions for new scripts
 
 Mirror the existing scripts:
