@@ -12,6 +12,19 @@ One-off scripts and notes for setting up a Fedora workstation.
 
 ## Scripts
 
+**Start here — the single entry point:**
+
+- [`user-manual-setup-all.sh`](user-manual-setup-all.sh) — one-shot, idempotent
+  setup of a fresh machine. Always runs the two core orchestrators
+  (`bootstrap-fedora` → shell environment, then `install-apps` → applications);
+  **prompts** for each optional (VS Code, Tailscale, and — on KDE — the
+  quick-access shortcut), defaulting to No; and installs the NVIDIA driver
+  **only** with an explicit `--with-nvidia` (never automatic — it's
+  hardware-specific). Under `--no-prompt` it runs core only and skips optionals.
+  Runs as your user (children self-elevate). Supports `--dry-run`,
+  `--no-prompt`, `--with-nvidia`, `--dotfiles-dir=<path>`. Everything below can
+  also be run individually.
+
 - [`user-manual-install-nvidia-driver.sh`](user-manual-install-nvidia-driver.sh) — install the proprietary NVIDIA
   driver via RPM Fusion. Solves a DisplayPort-retrain-after-suspend bug
   affecting newer NVIDIA GPUs (e.g. RTX 5070 Ti / GB203 Blackwell) under

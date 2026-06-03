@@ -8,6 +8,7 @@ One-off Fedora workstation setup scripts. Each script is independent, idempotent
 
 Current scripts:
 
+- `user-manual-setup-all.sh` — **top-level orchestrator / single entry point.** Always runs the two core orchestrators (`bootstrap-fedora` then `install-apps`); gates the optionals (vscode, tailscale, KDE quick-access) with per-item prompts defaulting to No; runs the NVIDIA driver only with explicit `--with-nvidia` (never automatic — hardware-specific). `--no-prompt` → core only, optionals skipped. Runs as the user (children self-elevate; refuses root). --dry-run / --no-prompt / --with-nvidia / --dotfiles-dir=<path>. Idempotent (delegates to idempotent children).
 - `user-manual-bootstrap-fedora.sh` — orchestrator. Runs the five user-level setup scripts in order (`modern-cli-tools` → `starship` → `zsh-plugins` → `deploy-dotfiles` → `configure-shell-to-zsh`); NVIDIA driver intentionally excluded (workstation-specific). Gates each step, aborts on child failure, passes through --dry-run / --no-prompt / --dotfiles-dir. Runs as the user (each child self-elevates); refuses to run as root. The one-shot fresh-machine path — see NIBBLER.md.
 - `user-manual-install-nvidia-driver.sh` — proprietary NVIDIA driver via RPM Fusion + akmod-nvidia; fixes DisplayPort retrain-after-suspend on Blackwell GPUs (RTX 5070 Ti / GB203). Auto-sudo, --dry-run / --no-prompt.
 - `user-manual-install-vscode.sh` — Visual Studio Code via Microsoft's RPM repo. Auto-sudo, --dry-run / --no-prompt.

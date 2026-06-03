@@ -65,11 +65,21 @@ git clone <remote>/claude-setup.git
 
 ## Step 2 — bootstrap scripts
 
-The quickest path is the orchestrator, which runs the five scripts below in
-order (NVIDIA omitted) and passes through `--dry-run` / `--no-prompt`:
+**Single command for the whole machine:** `./user-manual-setup-all.sh` runs the
+shell-environment bootstrap *and* the application set (Step 2 + the Applications
+step below) in one go, prompting for each optional. On the nibbler do **not**
+pass `--with-nvidia` (AMD APU). Preview with `--dry-run` first. The rest of this
+section describes the shell-environment bootstrap on its own.
+
+The quickest path for just the shell environment is its orchestrator, which runs
+the five scripts below in order (NVIDIA omitted) and passes through `--dry-run` /
+`--no-prompt`:
 
 ```bash
 cd ~/projects/repos/fedora-setup
+./user-manual-setup-all.sh --dry-run          # preview EVERYTHING (shell + apps)
+./user-manual-setup-all.sh                    # the whole machine, prompts for optionals
+# …or just the shell environment:
 ./user-manual-bootstrap-fedora.sh --dry-run   # preview first
 ./user-manual-bootstrap-fedora.sh             # real run
 ```
