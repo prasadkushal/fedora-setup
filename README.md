@@ -35,12 +35,35 @@ One-off scripts and notes for setting up a Fedora workstation.
   env var (`--no-prompt`). `--ssh` also turns on Tailscale SSH. Re-execs under
   `sudo -E` (preserving `TS_AUTHKEY`). Supports `--dry-run` and `--no-prompt`.
 
-### zsh bootstrap (run in this order on a fresh machine)
+- [`user-manual-install-quick-access-terminal-shortcut.sh`](user-manual-install-quick-access-terminal-shortcut.sh)
+  — KDE only. Binds `Meta+Return` to `kitten quick-access-terminal` (a Quake-style
+  drop-down terminal) via a `NoDisplay` `.desktop` file plus a
+  `[services][…] _launch=Meta+Return` entry in `kglobalshortcutsrc`. Best-effort
+  `kded6` reload at the end; log out / back in if the chord doesn't fire. No sudo.
+  Supports `--dry-run` and `--no-prompt`.
+
+### zsh bootstrap
+
+The quickest path is the orchestrator, which runs the five user-level scripts
+below in order (NVIDIA driver excluded — it's workstation-specific):
+
+- [`user-manual-bootstrap-fedora.sh`](user-manual-bootstrap-fedora.sh) —
+  sequences `modern-cli-tools` → `starship` → `zsh-plugins` → `deploy-dotfiles`
+  → `configure-shell-to-zsh`, gating each step (auto-proceed when
+  non-interactive) and aborting on any child failure. Runs as your user — each
+  child elevates itself if it needs root. Passes through `--dry-run` /
+  `--no-prompt` / `--dotfiles-dir`. Clone the dotfiles repo first;
+  `deploy-dotfiles` needs it.
+
+Or run the five individually, in this order:
 
 - [`user-manual-install-modern-cli-tools.sh`](user-manual-install-modern-cli-tools.sh)
-  — `dnf install` a curated set of modern CLI replacements + zsh:
-  `eza`, `bat`, `fd-find`, `zoxide`, `git-delta`, `direnv`, `fzf`, `ripgrep`,
-  `nvtop`, `zsh`. Each package is `rpm -q`'d and skipped if already installed.
+  — `dnf install` a curated set of modern CLI replacements + zsh + the kitty
+  terminal: `eza`, `bat`, `fd-find`, `zoxide`, `git-delta`, `direnv`, `fzf`,
+  `ripgrep`, `nvtop`, `zsh`, `kitty`. (kitty is here because the shell setup is
+  kitty-centric — `configure-shell-to-zsh` pins its `shell`, the quick-access
+  shortcut needs `kitten`, and the dotfiles ship kitty config.) Each package is
+  `rpm -q`'d and skipped if already installed.
   Re-execs under `sudo` automatically. Supports `--dry-run` and `--no-prompt`.
 
 - [`user-manual-install-starship.sh`](user-manual-install-starship.sh) — install
@@ -87,7 +110,8 @@ One-off scripts and notes for setting up a Fedora workstation.
   `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`. Run this on each peer
   machine to pull the other's committed dotfiles changes.
 
-  Recommended run order (fresh Fedora bootstrap):
+  Recommended run order (fresh Fedora bootstrap) — or just run
+  `user-manual-bootstrap-fedora.sh`, which does steps 1–3, 5, 6 for you:
 
   1. `user-manual-install-modern-cli-tools.sh`
   2. `user-manual-install-starship.sh`

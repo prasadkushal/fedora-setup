@@ -14,6 +14,11 @@
 #     ripgrep     — faster, gitignore-aware `grep`
 #     nvtop       — GPU monitor (NVIDIA, AMD, Intel)
 #     zsh         — z shell (target shell for user-manual-configure-shell-to-zsh.sh)
+#     kitty       — GPU terminal emulator. Not a POSIX replacement, but the rest
+#                   of the setup is kitty-centric (configure-shell-to-zsh pins
+#                   kitty's `shell`; quick-access-terminal-shortcut needs kitten;
+#                   the dotfiles ship kitty config), so it's installed here to
+#                   keep the bootstrap self-sufficient.
 #
 # Each package is checked individually via `rpm -q`; already-installed ones are
 # skipped. The remaining set is installed with a single `dnf install -y`.
@@ -95,6 +100,7 @@ PACKAGES=(
   ripgrep
   nvtop
   zsh
+  kitty
 )
 
 # ── Skip-already-installed pass ──────────────────────────────────────────────

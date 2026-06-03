@@ -8,9 +8,10 @@ One-off Fedora workstation setup scripts. Each script is independent, idempotent
 
 Current scripts:
 
+- `user-manual-bootstrap-fedora.sh` — orchestrator. Runs the five user-level setup scripts in order (`modern-cli-tools` → `starship` → `zsh-plugins` → `deploy-dotfiles` → `configure-shell-to-zsh`); NVIDIA driver intentionally excluded (workstation-specific). Gates each step, aborts on child failure, passes through --dry-run / --no-prompt / --dotfiles-dir. Runs as the user (each child self-elevates); refuses to run as root. The one-shot fresh-machine path — see NIBBLER.md.
 - `user-manual-install-nvidia-driver.sh` — proprietary NVIDIA driver via RPM Fusion + akmod-nvidia; fixes DisplayPort retrain-after-suspend on Blackwell GPUs (RTX 5070 Ti / GB203). Auto-sudo, --dry-run / --no-prompt.
 - `user-manual-install-vscode.sh` — Visual Studio Code via Microsoft's RPM repo. Auto-sudo, --dry-run / --no-prompt.
-- `user-manual-install-modern-cli-tools.sh` — modern CLI replacements (eza/bat/fd-find/zoxide/git-delta/direnv/fzf/ripgrep/nvtop) + zsh via dnf. Idempotent per-package via `rpm -q`. Auto-sudo, --dry-run / --no-prompt.
+- `user-manual-install-modern-cli-tools.sh` — modern CLI replacements (eza/bat/fd-find/zoxide/git-delta/direnv/fzf/ripgrep/nvtop) + zsh + the kitty terminal via dnf. kitty is included because the shell setup is kitty-centric (configure-shell pins its `shell`; quick-access needs `kitten`; dotfiles ship kitty config). Idempotent per-package via `rpm -q`. Auto-sudo, --dry-run / --no-prompt.
 - `user-manual-install-starship.sh` — starship cross-shell prompt to `~/.local/bin/` via the official installer. No sudo. --dry-run / --no-prompt.
 - `user-manual-install-zsh-plugins.sh` — clone zsh-autosuggestions / zsh-syntax-highlighting / zsh-completions into `~/.config/zsh/plugins/`. No sudo. --dry-run / --no-prompt.
 - `user-manual-install-quick-access-terminal-shortcut.sh` — bind `Meta+Return` to `kitten quick-access-terminal` via a `NoDisplay` `.desktop` file plus a `[services][...desktop] _launch=Meta+Return` entry in `kglobalshortcutsrc`. Best-effort `kded6` reload at the end; logout fallback if the chord does not activate. No sudo. `--dry-run` / `--no-prompt`.
