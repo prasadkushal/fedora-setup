@@ -19,6 +19,7 @@
 #                   kitty's `shell`; quick-access-terminal-shortcut needs kitten;
 #                   the dotfiles ship kitty config), so it's installed here to
 #                   keep the bootstrap self-sufficient.
+#     git-filter-repo — surgical git history rewriting (single-purpose CLI)
 #
 # Each package is checked individually via `rpm -q`; already-installed ones are
 # skipped. The remaining set is installed with a single `dnf install -y`.
@@ -101,6 +102,7 @@ PACKAGES=(
   nvtop
   zsh
   kitty
+  git-filter-repo
 )
 
 # ── Skip-already-installed pass ──────────────────────────────────────────────
