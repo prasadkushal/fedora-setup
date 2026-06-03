@@ -67,7 +67,9 @@ One-off scripts and notes for setting up a Fedora workstation.
   dotfiles repo (default: `~/projects/repos/dotfiles`) and symlink every
   regular file into the matching path under `~/`. So `<repo>/.zshrc` →
   `~/.zshrc`, `<repo>/.config/kitty/kitty.conf` → `~/.config/kitty/kitty.conf`,
-  and so on. Skips `.git/`, `.gitignore`, `README.md`, `CLAUDE.md`. Per file:
+  and so on. Skips `.git/`, `.gitignore`, `README.md`, `CLAUDE.md`, and
+  `settings.local.json` (machine-specific — holds the per-machine `env` block
+  incl. `CLAUDE_SETUP_DIR`, so it's never symlinked from a shared copy). Per file:
   silent skip if already a correct symlink, prompt+back-up-and-replace if a
   regular file exists, warn+skip on conflicting symlink. No sudo. Supports
   `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`.

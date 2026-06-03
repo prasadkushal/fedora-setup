@@ -107,10 +107,16 @@ else
 fi
 
 # ── Step 2: Install akmod-nvidia ─────────────────────────────────────────────
+# Track whether anything changed that warrants regenerating the initramfs (a
+# fresh driver install or a newly-written nouveau blacklist). When nothing
+# changed we skip the rebuild in Step 4 — it is heavy and otherwise ran on
+# every invocation despite the "each step idempotent" intent.
+_NEED_INITRAMFS=0
 if modinfo -F version nvidia &>/dev/null; then
   CURRENT=$(modinfo -F version nvidia)
   info "Proprietary NVIDIA driver already installed (version $CURRENT) — skipping install."
 else
+  _NEED_INITRAMFS=1
   info "Installing akmod-nvidia..."
   if dryrun; then
     info "[DRY-RUN] would run: dnf install -y akmod-nvidia && akmods --force"
@@ -132,6 +138,7 @@ MODPROBE_CONF=/etc/modprobe.d/nvidia.conf
 if grep -q "blacklist nouveau" "$MODPROBE_CONF" 2>/dev/null; then
   info "nouveau already blacklisted in $MODPROBE_CONF — skipping."
 else
+  _NEED_INITRAMFS=1
   info "Blacklisting nouveau driver in $MODPROBE_CONF..."
   if dryrun; then
     [ -e "$MODPROBE_CONF" ] && info "[DRY-RUN] would back up existing $MODPROBE_CONF → ${MODPROBE_CONF}.<timestamp>.bak"
@@ -152,12 +159,20 @@ EOF
   fi
 fi
 
-# ── Step 4: Rebuild initramfs ────────────────────────────────────────────────
-info "Rebuilding initramfs..."
-if dryrun; then
-  info "[DRY-RUN] would run: dracut --force"
+# ── Step 4: Rebuild initramfs (all installed kernels) ────────────────────────
+# --regenerate-all rebuilds EVERY installed kernel's initramfs, not just the
+# running one. Without it, booting an older kernel (e.g. after a kernel update)
+# could still autoload nouveau and bring back the DisplayPort-retrain-after-
+# suspend bug. Only run when Step 2 or Step 3 actually changed something.
+if [ "$_NEED_INITRAMFS" -eq 1 ]; then
+  info "Rebuilding initramfs for all installed kernels..."
+  if dryrun; then
+    info "[DRY-RUN] would run: dracut --force --regenerate-all"
+  else
+    dracut --force --regenerate-all
+  fi
 else
-  dracut --force
+  info "Driver and nouveau blacklist unchanged — skipping initramfs rebuild."
 fi
 
 # ── Done ─────────────────────────────────────────────────────────────────────

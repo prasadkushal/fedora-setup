@@ -22,7 +22,12 @@
 #   - Empty dir along the target path                        → create as needed
 #
 # Excluded paths (never symlinked into ~/):
-#   .git/* .gitignore README.md CLAUDE.md
+#   .git/* .gitignore README.md CLAUDE.md settings.local.json
+#
+# settings.local.json is machine-specific (it carries the per-machine `env`
+# block, including CLAUDE_SETUP_DIR, plus model/effort settings). Symlinking a
+# shared copy over it would clobber those values, so it is never deployed —
+# keep it as a real per-machine file.
 #
 # Usage:
 #   ./user-manual-deploy-dotfiles.sh                       # interactive
@@ -170,6 +175,7 @@ done < <(find "$DOTFILES_DIR" -type f \
   ! -name '.gitignore' \
   ! -name 'README.md' \
   ! -name 'CLAUDE.md' \
+  ! -name 'settings.local.json' \
   -print0)
 
 # ── Summary ──────────────────────────────────────────────────────────────────
