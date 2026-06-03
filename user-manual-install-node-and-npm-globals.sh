@@ -78,15 +78,15 @@ info "Detected Fedora $(rpm -E %fedora)."
 dryrun && warn "Running in --dry-run mode; no changes will be made."
 
 # ── ensure node + npm ─────────────────────────────────────────────────────────
-NODE_PKGS=(nodejs npm)
-to_install=()
-for p in "${NODE_PKGS[@]}"; do rpm -q "$p" &>/dev/null || to_install+=("$p"); done
-if [ "${#to_install[@]}" -eq 0 ]; then
-  info "Node.js + npm already installed — skipping."
+# Guard on the binaries, NOT `rpm -q npm`: Fedora ships npm via the `nodejs-npm`
+# package, so `rpm -q npm` always reports missing even when npm is present. On a
+# fresh machine `dnf install nodejs npm` resolves npm → nodejs-npm correctly.
+if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+  info "Node.js + npm already present (node $(node --version), npm $(npm --version)) — skipping."
 elif dryrun; then
-  info "[DRY-RUN] would run: dnf install -y ${to_install[*]}"
+  info "[DRY-RUN] would run: dnf install -y nodejs npm"
 else
-  dnf install -y "${to_install[@]}" || die "Failed to install node/npm."
+  dnf install -y nodejs npm || die "Failed to install node/npm."
 fi
 
 # ── install globals from manifest ─────────────────────────────────────────────
