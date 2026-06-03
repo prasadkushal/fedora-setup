@@ -1,0 +1,3 @@
+# npm packages to install globally (npm install -g). One per line; # comments ok.
+@openai/codex
+firebase-tools
