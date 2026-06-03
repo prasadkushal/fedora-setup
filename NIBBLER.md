@@ -101,6 +101,28 @@ symlinks into the repo, the pull updates your live config in place. The flow for
 a config change is: edit on machine A → commit & push (or let
 `reload-dotfiles` option 3 do it) → run `reload-dotfiles` on machine B.
 
+### Applications
+
+Reproduce the workstation's manually-installed apps with the orchestrator
+(design: `docs/specs/2026-06-03-reproduce-manual-apps-design.md`):
+
+```bash
+./user-manual-install-apps.sh            # docker, chrome, mullvad, flatpaks,
+                                         # node+npm globals, uv, claude
+```
+
+Notes:
+
+- **Docker** adds you to the `docker` group (effectively root) — **log out and
+  back in** before `docker` works without sudo.
+- The **flatpaks** (Obsidian, GIMP, Zen, Firefox) are GUI apps — they need a
+  desktop session to launch. Edit `flatpak-apps.list` to curate the set.
+- `uv` and `claude` install to `~/.local/bin` (already on PATH via the dotfiles).
+- NVIDIA is **not** part of this set (workstation-specific).
+- Curate before running: the set reflects the workstation. Drop anything the
+  nibbler doesn't need by editing `user-manual-install-apps.sh`'s step list or
+  the manifests.
+
 ---
 
 ## Step 3 — Claude Code config layer
@@ -164,6 +186,9 @@ cd ~/projects/repos/fedora-setup
 ./user-manual-bootstrap-fedora.sh
 # optional: ./user-manual-install-vscode.sh
 # optional (KDE): ./user-manual-install-quick-access-terminal-shortcut.sh
+
+# Applications (curate first — reflects the workstation; docker needs a re-login):
+./user-manual-install-apps.sh
 
 # Remote access (peers + remote): enroll on the tailnet.
 # Interactive prints a browser login URL; unattended needs TS_AUTHKEY.
