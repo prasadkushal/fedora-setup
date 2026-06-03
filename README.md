@@ -120,3 +120,47 @@ Or run the five individually, in this order:
   5. `user-manual-deploy-dotfiles.sh`
   6. `user-manual-configure-shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
      are no-ops at this point because step 5 already deployed them)
+
+### Applications
+
+The manually-curated app set the workstation carries, reproduced on a peer via
+one orchestrator (or run the individual installers). NVIDIA is excluded
+(separate, workstation-specific). Design:
+[`docs/specs/2026-06-03-reproduce-manual-apps-design.md`](docs/specs/2026-06-03-reproduce-manual-apps-design.md).
+
+- [`user-manual-install-apps.sh`](user-manual-install-apps.sh) — orchestrator.
+  Runs the seven app installers below in order (docker → chrome → mullvad →
+  flatpaks → node/npm-globals → uv → claude), gating each step and passing
+  through `--dry-run` / `--no-prompt`. Runs as your user; each child elevates
+  itself if it needs root. Mirrors `user-manual-bootstrap-fedora.sh`.
+
+- [`user-manual-install-docker.sh`](user-manual-install-docker.sh) — Docker CE
+  via Docker's official repo (engine + cli + buildx + compose + containerd),
+  enables the `docker` service, and adds you to the `docker` group (effectively
+  root — needs a re-login). Auto-sudo. `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-chrome.sh`](user-manual-install-chrome.sh) — Google
+  Chrome (`google-chrome-stable`) via Google's signed repo. Auto-sudo.
+  `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-mullvad.sh`](user-manual-install-mullvad.sh) — Mullvad
+  VPN + browser via Mullvad's signed repo. Auto-sudo. `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-flatpaks.sh`](user-manual-install-flatpaks.sh) — ensure
+  flatpak + the Flathub remote, then install every app ID in
+  [`flatpak-apps.list`](flatpak-apps.list) (Obsidian, GIMP, Zen, Firefox),
+  skipping already-installed. System-wide by default (auto-sudo); `--user` flips
+  to per-user (no sudo). `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-node-and-npm-globals.sh`](user-manual-install-node-and-npm-globals.sh)
+  — `dnf install nodejs npm`, then `npm install -g` each entry in
+  [`npm-globals.list`](npm-globals.list) (`@openai/codex`, `firebase-tools`).
+  Auto-sudo (global prefix is `/usr/local`). `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-uv.sh`](user-manual-install-uv.sh) — Astral `uv` (Python
+  package/project manager; also `uvx`) to `~/.local/bin` via the official
+  installer. No sudo. `--dry-run` / `--no-prompt`.
+
+- [`user-manual-install-claude.sh`](user-manual-install-claude.sh) — the Claude
+  Code CLI via its official native installer, to `~/.local/bin`. No sudo.
+  `--dry-run` / `--no-prompt`.
