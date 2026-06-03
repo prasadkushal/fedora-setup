@@ -1,0 +1,6 @@
+# Flathub app IDs to install. One per line; # comments and blank lines ignored.
+# Edit this list to add/remove apps; user-manual-install-flatpaks.sh applies it.
+md.obsidian.Obsidian
+org.gimp.GIMP
+app.zen_browser.zen
+org.mozilla.firefox
