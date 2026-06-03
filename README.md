@@ -26,6 +26,15 @@ One-off scripts and notes for setting up a Fedora workstation.
   step is idempotent (skips when state already matches). Re-execs under
   `sudo` automatically. Supports `--dry-run` and `--no-prompt`.
 
+- [`user-manual-install-tailscale.sh`](user-manual-install-tailscale.sh) —
+  install Tailscale (official Fedora RPM repo), enable `tailscaled`, and enroll
+  this machine on your tailnet so it's reachable by Magic DNS name from any of
+  your other machines — the "remote access" half of a peers-and-remote setup.
+  Backend-state-aware enrollment: already-up → skip; authenticated-but-down →
+  `tailscale up`; logged-out → browser login (interactive) or a `TS_AUTHKEY`
+  env var (`--no-prompt`). `--ssh` also turns on Tailscale SSH. Re-execs under
+  `sudo -E` (preserving `TS_AUTHKEY`). Supports `--dry-run` and `--no-prompt`.
+
 ### zsh bootstrap (run in this order on a fresh machine)
 
 - [`user-manual-install-modern-cli-tools.sh`](user-manual-install-modern-cli-tools.sh)
@@ -62,6 +71,19 @@ One-off scripts and notes for setting up a Fedora workstation.
   silent skip if already a correct symlink, prompt+back-up-and-replace if a
   regular file exists, warn+skip on conflicting symlink. No sudo. Supports
   `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`.
+
+- [`user-manual-reload-dotfiles.sh`](user-manual-reload-dotfiles.sh) — the
+  ongoing-sync companion to `deploy-dotfiles` (the `reload` idiom: fetch remote
+  first, then apply). `git fetch`es the dotfiles repo, reports exactly what
+  diverged (incoming/local-only commits, uncommitted changes), then reconciles.
+  Because the dotfiles are symlinks into the repo, a pull updates your live
+  config in place. Interactive shows the 3-way (replace-local / keep-local /
+  commit-and-push-first); `--no-prompt` does "pull only if clean" — fast-forwards
+  when the tree is clean and not ahead, otherwise aborts untouched (exit 2) so an
+  unattended run never destroys local work. Re-runs `deploy-dotfiles` afterward
+  to link newly-added files (`--skip-deploy` opts out). No sudo. Supports
+  `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`. Run this on each peer
+  machine to pull the other's committed dotfiles changes.
 
   Recommended run order (fresh Fedora bootstrap):
 

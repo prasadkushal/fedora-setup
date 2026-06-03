@@ -92,6 +92,14 @@ package, skip-if-correct-symlink per file), so re-running is safe.
 |---|---|---|
 | `./user-manual-install-vscode.sh` | if you want VS Code | auto |
 | `./user-manual-install-quick-access-terminal-shortcut.sh` | KDE only — binds `Meta+Return` to a quick-access terminal | no |
+| `./user-manual-install-tailscale.sh` | remote access — reach the workstation (and vice-versa) by Magic DNS name from anywhere | auto |
+
+After Tailscale is up on both boxes, keep them in sync with
+`./user-manual-reload-dotfiles.sh` on each machine: it pulls the other's
+committed dotfiles changes and re-links any new files. Because the dotfiles are
+symlinks into the repo, the pull updates your live config in place. The flow for
+a config change is: edit on machine A → commit & push (or let
+`reload-dotfiles` option 3 do it) → run `reload-dotfiles` on machine B.
 
 ---
 
@@ -130,9 +138,6 @@ echo $CLAUDE_SETUP_DIR      # ~/projects/repos/claude-setup
 These are real parts of "like the workstation" that no script here covers.
 Handle them separately and deliberately:
 
-- **Tailscale enrollment** — the nibbler needs its own `tailscale up`. Not
-  scripted. (The even-g2 bridge's Magic DNS name `oaknet-ws-fedora` is the
-  workstation, not nibbler.)
 - **Backup-client enrollment** — `oaknet-nibbler` is a *planned* restic/ZFS
   backup client (already listed in `incubator/lab/configs/server/oaknet-zfs-keys.service`
   and `configs/README` "each Linux device"), but the lab substrate is **not yet
@@ -159,4 +164,11 @@ cd ~/projects/repos/fedora-setup
 ./user-manual-bootstrap-fedora.sh
 # optional: ./user-manual-install-vscode.sh
 # optional (KDE): ./user-manual-install-quick-access-terminal-shortcut.sh
+
+# Remote access (peers + remote): enroll on the tailnet.
+# Interactive prints a browser login URL; unattended needs TS_AUTHKEY.
+./user-manual-install-tailscale.sh            # add --ssh to enable Tailscale SSH
+
+# Thereafter, pull the workstation's committed dotfiles changes anytime:
+./user-manual-reload-dotfiles.sh
 ```
