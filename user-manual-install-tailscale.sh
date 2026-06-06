@@ -10,7 +10,7 @@
 #     4. Enrolls this machine on your tailnet (`tailscale up`).
 #
 #   With Tailscale up on both the workstation and the mini-PC, each box reaches
-#   the other by its Magic DNS name (e.g. `oaknet-nibbler`) over an encrypted
+#   the other by its Magic DNS name (e.g. `usagi`) over an encrypted
 #   WireGuard link, from anywhere — the "remote" half of a peers+remote setup.
 #
 # Enrollment / auth:

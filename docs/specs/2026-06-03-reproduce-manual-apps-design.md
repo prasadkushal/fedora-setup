@@ -3,7 +3,7 @@
 **Date:** 2026-06-03
 **Status:** Approved (design); implementation pending
 **Goal:** Reproduce the applications/tools manually installed on the main
-workstation (`oaknet-ws-fedora`) onto the mini-PC (`oaknet-nibbler`) — and any
+workstation (`prime`) onto the mini-PC (`usagi`) — and any
 future Fedora peer — using the repo's existing idempotent-script idiom.
 
 ## Background
@@ -128,7 +128,7 @@ version pinning — consistent with existing scripts).
   the repo `CLAUDE.md` records it.
 - **README.md** + **CLAUDE.md** gain an entry per new script (preserving the
   "every script documented in both" invariant).
-- **NIBBLER.md** gains an **apps step** after the shell bootstrap, referencing
+- **USAGI.md** gains an **apps step** after the shell bootstrap, referencing
   `install-apps.sh`, and noting (a) the Docker re-login requirement and (b) that
   GUI flatpaks need a desktop session.
 

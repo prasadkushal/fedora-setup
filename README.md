@@ -4,8 +4,8 @@ One-off scripts and notes for setting up a Fedora workstation.
 
 ## Runbooks
 
-- [`NIBBLER.md`](NIBBLER.md) — provision the Beelink SER6 mini-PC
-  (`oaknet-nibbler`) with the same shell/CLI/Claude environment as the main
+- [`USAGI.md`](USAGI.md) — provision the Beelink SER6 mini-PC
+  (`usagi`) with the same shell/CLI/Claude environment as the main
   workstation. Config reproduction (clone repos + run the bootstrap scripts),
   not a disk clone; the NVIDIA driver script is intentionally skipped because
   the SER6 has no NVIDIA GPU.

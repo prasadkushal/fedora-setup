@@ -2,7 +2,7 @@
 # user-manual-bootstrap-fedora.sh
 # Orchestrate the fresh-machine bootstrap: run the five user-level setup
 # scripts in the documented order (NVIDIA driver intentionally excluded — it
-# is workstation-specific; see NIBBLER.md). Each child script keeps its own
+# is workstation-specific; see USAGI.md). Each child script keeps its own
 # prompting, --dry-run preview, and idempotency; this orchestrator only
 # sequences them and gates each step.
 #
@@ -73,7 +73,7 @@ done
 
 echo "fedora bootstrap — $(hostname -s)"
 echo "  Will run ${#_steps[@]} scripts in order. NVIDIA driver is skipped"
-echo "  (workstation-specific; see NIBBLER.md)."
+echo "  (workstation-specific; see USAGI.md)."
 [ "$_DRY_RUN" -eq 1 ] && echo "  DRY-RUN: children invoked with --dry-run (no changes)."
 echo ""
 
@@ -123,6 +123,6 @@ done
 
 echo ""
 echo "bootstrap complete: $_ran run, $_skipped skipped, of $_total."
-echo "  Next: verify per NIBBLER.md Step 4, then handle the out-of-scope items"
+echo "  Next: verify per USAGI.md Step 4, then handle the out-of-scope items"
 echo "  (Tailscale, backup enrollment, credentials)."
 exit 0
