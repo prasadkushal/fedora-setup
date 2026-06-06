@@ -10,6 +10,14 @@ One-off scripts and notes for setting up a Fedora workstation.
   not a disk clone; the NVIDIA driver script is intentionally skipped because
   the SER6 has no NVIDIA GPU.
 
+## Planned Oaknet Backup Enrollment
+
+- [`docs/specs/2026-06-06-bitwarden-backup-secrets-design.md`](docs/specs/2026-06-06-bitwarden-backup-secrets-design.md)
+  — future Fedora backup client runtime for fetching restic, rest-server, and
+  Uptime Kuma secrets from Bitwarden Secrets Manager under systemd. This is
+  blocked until the Oaknet lab backup substrate exists and should not store live
+  passwords, Push URLs, or Bitwarden tokens in git.
+
 ## Scripts
 
 **Start here — the single entry point:**

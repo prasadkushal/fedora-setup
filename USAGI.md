@@ -175,7 +175,11 @@ Handle them separately and deliberately:
 - **Backup-client enrollment** — `usagi` is a *planned* restic/ZFS
   backup client (already listed in `incubator/lab/configs/server/oaknet-zfs-keys.service`
   and `configs/README` "each Linux device"), but the lab substrate is **not yet
-  executing**. This is future lab work, separate from cloning the workstation.
+  executing**. The host-side secret-runtime direction is documented in
+  `docs/specs/2026-06-06-bitwarden-backup-secrets-design.md`: use Bitwarden
+  Secrets Manager plus a systemd encrypted credential instead of making
+  persistent plaintext restic/Kuma secret files the steady-state design. This is
+  future lab/setup work, separate from cloning the workstation.
 - **Credentials** — git/SSH keys, `gh auth`, app logins: manual.
 - **GUI apps / Flatpaks** beyond VS Code: not captured anywhere.
 
