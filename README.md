@@ -25,8 +25,9 @@ One-off scripts and notes for setting up a Fedora workstation.
 - [`user-manual-setup-all.sh`](user-manual-setup-all.sh) — one-shot, idempotent
   setup of a fresh machine. Always runs the two core orchestrators
   (`bootstrap-fedora` → shell environment, then `install-apps` → applications);
-  **prompts** for each optional (VS Code, Tailscale, and — on KDE — the
-  quick-access shortcut), defaulting to No; and installs the NVIDIA driver
+  **prompts** for each optional (VS Code, Tailscale, the SSH server, and — on
+  KDE — the RDP server and quick-access shortcut), defaulting to No; and
+  installs the NVIDIA driver
   **only** with an explicit `--with-nvidia` (never automatic — it's
   hardware-specific). Under `--no-prompt` it runs core only and skips optionals.
   Runs as your user (children self-elevate). Supports `--dry-run`,
