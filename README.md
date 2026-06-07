@@ -56,6 +56,23 @@ One-off scripts and notes for setting up a Fedora workstation.
   env var (`--no-prompt`). `--ssh` also turns on Tailscale SSH. Re-execs under
   `sudo -E` (preserving `TS_AUTHKEY`). Supports `--dry-run` and `--no-prompt`.
 
+- [`user-manual-configure-ssh-server.sh`](user-manual-configure-ssh-server.sh) —
+  enable + start `sshd` and ensure the firewalld `ssh` service, for remote
+  shell access over LAN and tailnet (independent of Tailscale SSH).
+  sshd_config stays at Fedora defaults. Auto-sudo. Supports `--dry-run` and
+  `--no-prompt`. Design: [remote-access spec](docs/specs/2026-06-07-remote-access-design.md).
+
+- [`user-manual-configure-rdp-server.sh`](user-manual-configure-rdp-server.sh) —
+  KDE only. Enables krdp, KDE's built-in RDP server (preinstalled with Plasma
+  ≥ 6.1), which shares the **live Wayland session**: generates a self-signed
+  TLS cert, writes `krdpserverrc` with `SystemUserEnabled` (RDP clients log in
+  with the Linux username/password — no stored secret), ensures the firewalld
+  `rdp` service, and enables the `app-org.kde.krdpserver.service` user unit so
+  it starts with every Plasma login. Runs as the user (refuses root); inline
+  sudo only for the firewall step if needed. Works only while a desktop
+  session is logged in. Supports `--dry-run` and `--no-prompt`.
+  Design: [remote-access spec](docs/specs/2026-06-07-remote-access-design.md).
+
 - [`user-manual-install-quick-access-terminal-shortcut.sh`](user-manual-install-quick-access-terminal-shortcut.sh)
   — KDE only. Binds `Meta+Return` to `kitten quick-access-terminal` (a Quake-style
   drop-down terminal) via a `NoDisplay` `.desktop` file plus a

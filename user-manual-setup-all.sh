@@ -16,10 +16,12 @@
 #   OPTIONAL (interactive: prompted per item, default No; --no-prompt: skipped):
 #     3. user-manual-install-vscode.sh
 #     4. user-manual-install-tailscale.sh                       (needs login)
-#     5. user-manual-install-quick-access-terminal-shortcut.sh  (KDE only)
+#     5. user-manual-configure-ssh-server.sh                    (remote shell)
+#     6. user-manual-configure-rdp-server.sh                    (KDE only)
+#     7. user-manual-install-quick-access-terminal-shortcut.sh  (KDE only)
 #
 #   HARDWARE-SPECIFIC (only with --with-nvidia — NEVER automatic):
-#     6. user-manual-install-nvidia-driver.sh  — DO NOT run on non-NVIDIA
+#     8. user-manual-install-nvidia-driver.sh  — DO NOT run on non-NVIDIA
 #        hardware (e.g. the AMD mini-PC). It blacklists nouveau for a Blackwell
 #        GPU and would be wrong elsewhere.
 #
@@ -138,6 +140,20 @@ fi
 if _ask_optional "Tailscale (remote access; prints a login URL)"; then
   _run_child "Tailscale" "user-manual-install-tailscale.sh" "${_pass_through[@]}" \
     || { warn "Tailscale step failed (continuing)."; _optional_failed=1; }
+fi
+
+if _ask_optional "SSH server (enable sshd for remote shell access)"; then
+  _run_child "SSH server" "user-manual-configure-ssh-server.sh" "${_pass_through[@]}" \
+    || { warn "SSH server step failed (continuing)."; _optional_failed=1; }
+fi
+
+if _is_kde; then
+  if _ask_optional "RDP server (KDE krdp; share the desktop session)"; then
+    _run_child "RDP server" "user-manual-configure-rdp-server.sh" "${_pass_through[@]}" \
+      || { warn "RDP server step failed (continuing)."; _optional_failed=1; }
+  fi
+else
+  info "(not a KDE session — skipping the krdp RDP server)"
 fi
 
 if _is_kde; then
