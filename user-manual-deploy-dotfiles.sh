@@ -22,7 +22,11 @@
 #   - Empty dir along the target path                        → create as needed
 #
 # Excluded paths (never symlinked into ~/):
-#   .git/* .gitignore README.md CLAUDE.md settings.local.json
+#   .git/* .claude/* .gitignore README.md CLAUDE.md settings.local.json
+#
+# .claude/* is excluded because ~/.claude is managed by the claude-setup
+# repo, and Claude Code may park worktrees at <dotfiles>/.claude/worktrees/
+# — without the exclusion those would get symlinked into ~/.claude/.
 #
 # settings.local.json is machine-specific (it carries the per-machine `env`
 # block, including CLAUDE_SETUP_DIR, plus model/effort settings). Symlinking a
@@ -172,6 +176,7 @@ while IFS= read -r -d '' source_abs; do
   fi
 done < <(find "$DOTFILES_DIR" -type f \
   ! -path '*/.git/*' \
+  ! -path '*/.claude/*' \
   ! -name '.gitignore' \
   ! -name 'README.md' \
   ! -name 'CLAUDE.md' \
