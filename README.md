@@ -18,6 +18,13 @@ One-off scripts and notes for setting up a Fedora workstation.
   blocked until the Oaknet lab backup substrate exists and should not store live
   passwords, Push URLs, or Bitwarden tokens in git.
 
+## Remote Access Layout
+
+- [`docs/specs/2026-06-07-fedora-remote-access-layout.md`](docs/specs/2026-06-07-fedora-remote-access-layout.md)
+  — incoming SSH plus two RDP paths for Fedora workstations: KDE RDP on `3389`
+  for the active Plasma Wayland session, and XRDP on `3390` with a separate
+  fallback user/session for pre-login or post-reboot GUI access.
+
 ## Scripts
 
 **Start here — the single entry point:**
