@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-zsh-plugins.sh — Clone the quality-of-life zsh plugins
+# install/zsh-plugins.sh — Clone the quality-of-life zsh plugins
 #
 # What this does:
 #   Clones four plugins (depth=1) into ~/.config/zsh/plugins/:
@@ -22,9 +22,9 @@
 #   - Otherwise it clones fresh.
 #
 # Usage:
-#   ./user-manual-install-zsh-plugins.sh             # interactive
-#   ./user-manual-install-zsh-plugins.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-zsh-plugins.sh --dry-run   # show, change nothing
+#   ./install/zsh-plugins.sh             # interactive
+#   ./install/zsh-plugins.sh --no-prompt # non-interactive, idempotent
+#   ./install/zsh-plugins.sh --dry-run   # show, change nothing
 #
 # Note: This script does NOT require sudo. Plugins clone into ~/.config/zsh/.
 

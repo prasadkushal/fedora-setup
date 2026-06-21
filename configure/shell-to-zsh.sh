@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-configure-shell-to-zsh.sh — Flip the user's interactive shell to zsh
+# configure/shell-to-zsh.sh — Flip the user's interactive shell to zsh
 #
 # What this does (three idempotent steps):
 #   1. Symlink ~/.zshenv and ~/.zshrc → <dotfiles-repo>/. PATH/env lives in
@@ -18,15 +18,15 @@
 # everything is already configured is a no-op.
 #
 # Usage:
-#   ./user-manual-configure-shell-to-zsh.sh                       # interactive
-#   ./user-manual-configure-shell-to-zsh.sh --no-prompt           # non-interactive
-#   ./user-manual-configure-shell-to-zsh.sh --dry-run             # show, change nothing
-#   ./user-manual-configure-shell-to-zsh.sh --dotfiles-dir <path> # override dotfiles repo
+#   ./configure/shell-to-zsh.sh                       # interactive
+#   ./configure/shell-to-zsh.sh --no-prompt           # non-interactive
+#   ./configure/shell-to-zsh.sh --dry-run             # show, change nothing
+#   ./configure/shell-to-zsh.sh --dotfiles-dir <path> # override dotfiles repo
 #
 # Prerequisites (run these first):
-#   - user-manual-install-modern-cli-tools.sh   (installs zsh + tools)
-#   - user-manual-install-starship.sh           (prompt)
-#   - user-manual-install-zsh-plugins.sh        (autosuggestions / highlighting / completions)
+#   - install/modern-cli-tools.sh   (installs zsh + tools)
+#   - install/starship.sh           (prompt)
+#   - install/zsh-plugins.sh        (autosuggestions / highlighting / completions)
 #   - A dotfiles repo clone at ~/projects/repos/dotfiles (default) with a
 #     .zshenv and .zshrc at its root. Override the location with --dotfiles-dir.
 #
@@ -80,7 +80,7 @@ ask() {
 # ── Pre-flight ───────────────────────────────────────────────────────────────
 [ "$EUID" -eq 0 ] && die "Don't run this as root."
 
-command -v zsh &>/dev/null || die "zsh not found. Run user-manual-install-modern-cli-tools.sh first."
+command -v zsh &>/dev/null || die "zsh not found. Run install/modern-cli-tools.sh first."
 [ -x /bin/zsh ] || die "/bin/zsh not found (zsh is installed but not at the expected path)."
 
 grep -q "^/bin/zsh$" /etc/shells || die "/bin/zsh missing from /etc/shells — chsh would refuse the change. Reinstall zsh or add /bin/zsh to /etc/shells."
@@ -171,7 +171,7 @@ else
           echo "#"
           echo "# Pin kitty to launch zsh regardless of \$SHELL env (which is frozen at"
           echo "# desktop-session start and doesn't refresh after chsh). Added by"
-          echo "# user-manual-configure-shell-to-zsh.sh."
+          echo "# configure/shell-to-zsh.sh."
           echo "shell /bin/zsh"
         } >> "$KITTY_CONF"
         info "Appended shell directive to $KITTY_CONF. Reload kitty with ctrl+shift+f5."

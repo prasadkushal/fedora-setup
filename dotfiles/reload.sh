@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# user-manual-reload-dotfiles.sh — Pull the dotfiles repo from remote, reconcile
+# dotfiles/reload.sh — Pull the dotfiles repo from remote, reconcile
 #                                  divergence, then re-deploy symlinks.
 #
 # What this does (the "reload" idiom: fetch remote first, then apply):
 #   1. Fetches the dotfiles repo's remote and reports exactly what diverged
 #      (incoming remote commits, local-only commits, uncommitted changes).
 #   2. Reconciles the divergence. Because ~/.zshrc etc. are SYMLINKS into this
-#      repo (see user-manual-deploy-dotfiles.sh), updating the repo updates
+#      repo (see dotfiles/deploy.sh), updating the repo updates
 #      your live config in place — no copy step needed.
 #   3. Re-runs the deploy script so any NEWLY-ADDED dotfiles get symlinked too.
 #
@@ -22,11 +22,11 @@
 #   without touching anything (exit 2) so no local work is ever lost unattended.
 #
 # Usage:
-#   ./user-manual-reload-dotfiles.sh                       # interactive 3-way
-#   ./user-manual-reload-dotfiles.sh --no-prompt           # ff-if-clean, else abort
-#   ./user-manual-reload-dotfiles.sh --dry-run             # show, change nothing
-#   ./user-manual-reload-dotfiles.sh --skip-deploy         # pull only, no symlink refresh
-#   ./user-manual-reload-dotfiles.sh --dotfiles-dir <path> # override repo location
+#   ./dotfiles/reload.sh                       # interactive 3-way
+#   ./dotfiles/reload.sh --no-prompt           # ff-if-clean, else abort
+#   ./dotfiles/reload.sh --dry-run             # show, change nothing
+#   ./dotfiles/reload.sh --skip-deploy         # pull only, no symlink refresh
+#   ./dotfiles/reload.sh --dotfiles-dir <path> # override repo location
 #
 # No sudo: everything happens inside the dotfiles repo and your $HOME.
 
@@ -87,7 +87,7 @@ run_deploy() {
     info "Skipping symlink refresh (--skip-deploy)."
     return
   fi
-  local deploy="$_SCRIPT_DIR/user-manual-deploy-dotfiles.sh"
+  local deploy="$_SCRIPT_DIR/deploy.sh"
   if [ ! -x "$deploy" ]; then
     warn "Deploy script not found at $deploy — skipping symlink refresh."
     warn "Any newly-added dotfiles won't be linked until you run it manually."

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-mullvad.sh — Install Mullvad VPN app and browser on Fedora
+# install/mullvad.sh — Install Mullvad VPN app and browser on Fedora
 #
 # What this does:
 #   Gives you a fully-working Mullvad install via Mullvad's official signed repo:
@@ -8,9 +8,9 @@
 #        (skipped if already present).
 #
 # Usage:
-#   ./user-manual-install-mullvad.sh                  # interactive
-#   ./user-manual-install-mullvad.sh --no-prompt      # unattended (auto-confirms)
-#   ./user-manual-install-mullvad.sh --dry-run        # show what would happen, change nothing
+#   ./install/mullvad.sh                  # interactive
+#   ./install/mullvad.sh --no-prompt      # unattended (auto-confirms)
+#   ./install/mullvad.sh --dry-run        # show what would happen, change nothing
 #
 # Auto-sudo: installing packages needs root; this re-execs under `sudo -E`.
 # State checks run unprivileged (--dry-run stays as the invoking user).

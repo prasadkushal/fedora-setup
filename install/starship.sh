@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-starship.sh — Install the starship cross-shell prompt
+# install/starship.sh — Install the starship cross-shell prompt
 #
 # What this does:
 #   Downloads and runs the official starship installer
@@ -13,9 +13,9 @@
 #   - Otherwise it runs the installer.
 #
 # Usage:
-#   ./user-manual-install-starship.sh             # interactive
-#   ./user-manual-install-starship.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-starship.sh --dry-run   # show, change nothing
+#   ./install/starship.sh             # interactive
+#   ./install/starship.sh --no-prompt # non-interactive, idempotent
+#   ./install/starship.sh --dry-run   # show, change nothing
 #
 # Note: This script does NOT require sudo. starship installs to ~/.local/bin/
 # and runs as the invoking user. (Re-running with `sudo` would install into

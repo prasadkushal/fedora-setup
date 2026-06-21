@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-tailscale.sh — Install Tailscale and enroll this machine
+# install/tailscale.sh — Install Tailscale and enroll this machine
 #
 # What this does:
 #   Makes remote access between your machines reproducible instead of a manual
@@ -21,10 +21,10 @@
 #                 never printed or logged. Fails clearly if TS_AUTHKEY is unset.
 #
 # Usage:
-#   ./user-manual-install-tailscale.sh                    # interactive, browser login
-#   ./user-manual-install-tailscale.sh --ssh              # also enable Tailscale SSH
-#   TS_AUTHKEY=tskey-... ./user-manual-install-tailscale.sh --no-prompt
-#   ./user-manual-install-tailscale.sh --dry-run          # show, change nothing
+#   ./install/tailscale.sh                    # interactive, browser login
+#   ./install/tailscale.sh --ssh              # also enable Tailscale SSH
+#   TS_AUTHKEY=tskey-... ./install/tailscale.sh --no-prompt
+#   ./install/tailscale.sh --dry-run          # show, change nothing
 #
 # Auto-sudo: installing packages + managing tailscaled needs root; this re-execs
 # under `sudo -E` (preserving TS_AUTHKEY). State checks run unprivileged.

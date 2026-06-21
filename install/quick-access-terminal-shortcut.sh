@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-quick-access-terminal-shortcut.sh — Bind Meta+Return to kitten's quick-access drop-down terminal
+# install/quick-access-terminal-shortcut.sh — Bind Meta+Return to kitten's quick-access drop-down terminal
 #
 # What this does:
 #   1. Drops a NoDisplay .desktop file at
@@ -29,9 +29,9 @@
 #     warn but proceed — Plasma may resolve the conflict at runtime.
 #
 # Usage:
-#   ./user-manual-install-quick-access-terminal-shortcut.sh             # interactive
-#   ./user-manual-install-quick-access-terminal-shortcut.sh --no-prompt # idempotent, overwrites collisions
-#   ./user-manual-install-quick-access-terminal-shortcut.sh --dry-run   # show, change nothing
+#   ./install/quick-access-terminal-shortcut.sh             # interactive
+#   ./install/quick-access-terminal-shortcut.sh --no-prompt # idempotent, overwrites collisions
+#   ./install/quick-access-terminal-shortcut.sh --dry-run   # show, change nothing
 #
 # This script does NOT require sudo. Both target files live under $HOME.
 

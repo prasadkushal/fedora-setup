@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# user-manual-install-chrome.sh — Install Google Chrome via Google's RPM repo
+# install/vscode.sh — Install Visual Studio Code via Microsoft's RPM repo
 #
 # What this does:
-#   1. Imports Google's GPG signing key into the RPM keyring.
-#   2. Writes /etc/yum.repos.d/google-chrome.repo pointing at the Google yum repo.
-#   3. Installs the `google-chrome-stable` package via dnf.
+#   1. Imports Microsoft's GPG signing key into the RPM keyring.
+#   2. Writes /etc/yum.repos.d/vscode.repo pointing at the Microsoft yum repo.
+#   3. Installs the `code` package via dnf.
 #
 # Each step is idempotent: if state already matches what the script would
 # produce, the step is skipped silently. If state differs, you're prompted
@@ -12,9 +12,9 @@
 # timestamped backup (--no-prompt / RUNTOOLS_AS_NONINTERACTIVE=1).
 #
 # Usage:
-#   ./user-manual-install-chrome.sh                # interactive
-#   ./user-manual-install-chrome.sh --no-prompt    # non-interactive, idempotent
-#   ./user-manual-install-chrome.sh --dry-run      # show what would happen, change nothing
+#   ./install/vscode.sh                # interactive
+#   ./install/vscode.sh --no-prompt    # non-interactive, idempotent
+#   ./install/vscode.sh --dry-run      # show what would happen, change nothing
 
 set -euo pipefail
 
@@ -80,13 +80,13 @@ require_root "$@"
 info "Detected Fedora $(rpm -E %fedora)."
 dryrun && warn "Running in --dry-run mode; no changes will be made."
 
-# ── Step 1: Google GPG key ───────────────────────────────────────────────────
-KEY_URL="https://dl.google.com/linux/linux_signing_key.pub"
+# ── Step 1: Microsoft GPG key ────────────────────────────────────────────────
+KEY_URL="https://packages.microsoft.com/keys/microsoft.asc"
 
-if rpm -q gpg-pubkey --qf '%{SUMMARY}\n' 2>/dev/null | grep -qi 'google'; then
-  info "Google GPG key already imported — skipping."
+if rpm -q gpg-pubkey --qf '%{SUMMARY}\n' 2>/dev/null | grep -qi 'microsoft'; then
+  info "Microsoft GPG key already imported — skipping."
 else
-  info "Importing Google GPG key from $KEY_URL"
+  info "Importing Microsoft GPG key from $KEY_URL"
   if dryrun; then
     info "[DRY-RUN] would run: rpm --import $KEY_URL"
   else
@@ -94,15 +94,17 @@ else
   fi
 fi
 
-# ── Step 2: google-chrome.repo ───────────────────────────────────────────────
-REPO_FILE=/etc/yum.repos.d/google-chrome.repo
+# ── Step 2: vscode.repo ──────────────────────────────────────────────────────
+REPO_FILE=/etc/yum.repos.d/vscode.repo
 REPO_CONTENT=$(cat <<'EOF'
-[google-chrome]
-name=google-chrome
-baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
 enabled=1
+autorefresh=1
+type=rpm-md
 gpgcheck=1
-gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOF
 )
 
@@ -143,27 +145,27 @@ else
   esac
 fi
 
-# ── Step 3: install google-chrome-stable package ─────────────────────────────
-if rpm -q google-chrome-stable &>/dev/null; then
-  installed=$(rpm -q --qf '%{VERSION}-%{RELEASE}' google-chrome-stable)
-  info "google-chrome-stable is already installed ($installed)."
-  case "$(ask 'Run dnf upgrade for google-chrome-stable? [y/N/q]' 'n')" in
+# ── Step 3: install code package ─────────────────────────────────────────────
+if rpm -q code &>/dev/null; then
+  installed=$(rpm -q --qf '%{VERSION}-%{RELEASE}' code)
+  info "code is already installed ($installed)."
+  case "$(ask 'Run dnf upgrade for code? [y/N/q]' 'n')" in
     [Yy]*)
       if dryrun; then
-        info "[DRY-RUN] would run: dnf upgrade -y google-chrome-stable"
+        info "[DRY-RUN] would run: dnf upgrade -y code"
       else
-        dnf upgrade -y google-chrome-stable
+        dnf upgrade -y code
       fi
       ;;
     [Qq]*) die "Aborted by user." ;;
     *)     info "Leaving installed version unchanged." ;;
   esac
 else
-  info "Installing google-chrome-stable package..."
+  info "Installing code package..."
   if dryrun; then
-    info "[DRY-RUN] would run: dnf install -y google-chrome-stable"
+    info "[DRY-RUN] would run: dnf install -y code"
   else
-    dnf install -y google-chrome-stable
+    dnf install -y code
   fi
 fi
 
@@ -172,10 +174,10 @@ echo ""
 if dryrun; then
   info "Dry run complete. No changes were made."
 else
-  if command -v google-chrome-stable &>/dev/null; then
-    info "Google Chrome installed: $(google-chrome-stable --version | head -1)"
-    info "Launch with: google-chrome-stable"
+  if command -v code &>/dev/null; then
+    info "VS Code installed: $(code --version | head -1)"
+    info "Launch with: code ."
   else
-    warn "google-chrome-stable command not found on PATH after install — verify manually."
+    warn "code command not found on PATH after install — verify manually."
   fi
 fi

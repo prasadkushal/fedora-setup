@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-flatpaks.sh — Install Flatpak apps from the manifest
+# install/flatpaks.sh — Install Flatpak apps from the manifest
 #
 # What this does:
 #   Makes Flatpak app installs reproducible from a plain text manifest. It:
@@ -12,10 +12,10 @@
 #   to a per-user install instead (no root required).
 #
 # Usage:
-#   ./user-manual-install-flatpaks.sh              # system-wide install (needs root)
-#   ./user-manual-install-flatpaks.sh --user        # per-user install, no sudo
-#   ./user-manual-install-flatpaks.sh --dry-run     # show what would change, do nothing
-#   ./user-manual-install-flatpaks.sh --user --dry-run
+#   ./install/flatpaks.sh              # system-wide install (needs root)
+#   ./install/flatpaks.sh --user        # per-user install, no sudo
+#   ./install/flatpaks.sh --dry-run     # show what would change, do nothing
+#   ./install/flatpaks.sh --user --dry-run
 #
 # Manifest: flatpak-apps.list (must live next to this script)
 

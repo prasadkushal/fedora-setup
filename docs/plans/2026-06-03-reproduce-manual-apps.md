@@ -1,5 +1,13 @@
 # Reproduce Manually-Installed Apps — Implementation Plan
 
+> **Historical note (2026-06-21):** This plan is a completed record and its script
+> names are left as written at the time. The repo was since reorganized — the
+> `user-manual-install-*.sh` / `user-manual-configure-*.sh` files were moved into
+> `install/`, `configure/`, and `dotfiles/` subdirectories with the `user-manual-`
+> prefix dropped (e.g. `user-manual-install-docker.sh` → `install/docker.sh`,
+> `user-manual-install-apps.sh` → `install/apps.sh`). See `README.md`/`CLAUDE.md`
+> for the current layout.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add scripts that reproduce the workstation's manually-installed apps (Docker, Chrome, Mullvad, four flatpaks, and CLI tools uv/claude/node-globals/git-filter-repo) on any Fedora peer, plus an orchestrator to run them.

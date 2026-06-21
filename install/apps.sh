@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-apps.sh
+# apps.sh
 # Orchestrate the manually-curated application set: run the seven install
 # scripts in order (NVIDIA driver intentionally excluded — it is
 # workstation-specific; see docs/specs/2026-06-03-reproduce-manual-apps-design.md).
@@ -7,9 +7,9 @@
 # this orchestrator only sequences them and gates each step.
 #
 # Usage:
-#   ./user-manual-install-apps.sh                 # confirm before each step
-#   ./user-manual-install-apps.sh --dry-run       # preview (passed to children)
-#   ./user-manual-install-apps.sh --no-prompt     # run all 7, no gating
+#   ./apps.sh                 # confirm before each step
+#   ./apps.sh --dry-run       # preview (passed to children)
+#   ./apps.sh --no-prompt     # run all 7, no gating
 #
 # Why no auto-sudo here: uv, claude, and rmapi children refuse to run as root;
 # docker/chrome/mullvad/node children self-elevate when they need root.
@@ -49,14 +49,14 @@ fi
 
 # ── The sequence (NVIDIA driver intentionally excluded) ───────────────────────
 _steps=(
-  "user-manual-install-docker.sh"
-  "user-manual-install-chrome.sh"
-  "user-manual-install-mullvad.sh"
-  "user-manual-install-flatpaks.sh"
-  "user-manual-install-node-and-npm-globals.sh"
-  "user-manual-install-uv.sh"
-  "user-manual-install-claude.sh"
-  "user-manual-install-rmapi.sh"
+  "docker.sh"
+  "chrome.sh"
+  "mullvad.sh"
+  "flatpaks.sh"
+  "node-and-npm-globals.sh"
+  "uv.sh"
+  "claude.sh"
+  "rmapi.sh"
 )
 
 # ── Dependency check: every child must exist and be executable ────────────────
