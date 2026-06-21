@@ -1,9 +1,27 @@
 # Fedora workstation remote access layout
 
 **Date:** 2026-06-07
-**Status:** Active on `prime`; reusable pattern for Fedora peers
+**Status:** Canonical remote-access spec for this repo. Active on `prime`;
+partially implemented on `usagi` (SSH + KDE RDP only). Reusable pattern for
+Fedora peers. Consolidates the earlier `2026-06-07-remote-access-design.md`
+(removed) — the SSH-vs-Tailscale-SSH and krdp-vs-xrdp rationale and the
+script/privilege model from that doc are folded in below.
 **Goal:** Provide predictable incoming SSH and GUI access without enabling physical-console
 autologin or broad LAN/WAN exposure.
+
+## Implemented vs. manual (status at a glance)
+
+| Piece | Scripted? | On `prime` | On `usagi` |
+|---|---|---|---|
+| OpenSSH server | ✅ `user-manual-configure-ssh-server.sh` | ✅ | ✅ |
+| KDE RDP (`krdp`, :3389) | ✅ `user-manual-configure-rdp-server.sh` | ✅ | ✅ |
+| XRDP fallback (:3390) + fallback user | ❌ manual sketch (below) | ✅ | ❌ not yet |
+| Source-restricted firewall (rich rules) | ❌ scripts add the broad service only | ✅ (manual) | ❌ broad service, open to all sources |
+
+The two `user-manual-configure-*` scripts each ensure their firewalld *service*
+(`ssh` / `rdp`) in the default zone — open to every source. The
+source-restriction (Users VLAN + Tailscale CGNAT) in **Security Posture** below
+is not yet scripted; on `prime` it was applied by hand.
 
 ## Current `prime` Layout
 
@@ -24,6 +42,47 @@ Incoming access:
 `3389` intentionally stays with KDE RDP because it shares the real active desktop when the
 user is already logged into Plasma. `3390` is reserved for XRDP so it can create a separate
 remote Xorg/XFCE session after reboot without requiring SDDM autologin.
+
+## Peer: `usagi` (Fedora KDE mini-PC)
+
+Same pattern, currently SSH + KDE RDP only (no XRDP fallback yet).
+
+- Users VLAN IP: `10.69.11.5` (UniFi fixed reservation, MAC `70:70:fc:05:9f:53`)
+- `ssh_user` / KDE-RDP login: `prime`
+- Reached from `prime` via `connect-prime.sh`'s mirror image (`krdc rdp://10.69.11.5`
+  or `xfreerdp /v:10.69.11.5 …`). Full runbook: claude-setup memory
+  `oaknet-registry/reference_usagi_rdp.md`.
+
+usagi is the strongest case for the XRDP fallback: it's woken by Wake-on-LAN and
+sits at SDDM with **no live session** post-boot, so KDE RDP authenticates then
+immediately drops with `ERRINFO_LOGOFF_BY_USER (0x0000000C)`. XRDP on `3390`
+(its own session) sidesteps that without enabling autologin. Until then, the
+documented workarounds are: log in at usagi's console once, or enable SDDM
+autologin.
+
+## krdp authentication & TLS (the :3389 path)
+
+- **Auth = system user (PAM).** `krdpserverrc` sets `SystemUserEnabled=true`; RDP
+  clients log in with the machine's Linux username + password. No second secret
+  to provision (vs. the KCM's KWallet-stored per-server credential, which can't
+  be set up headlessly). This is what makes `user-manual-configure-rdp-server.sh`
+  idempotent and secret-free.
+- **TLS:** krdpserver requires a cert; the script generates a self-signed pair
+  under `~/.local/share/krdpserver/` (openssl, 10y, key `chmod 600`) when absent
+  — the same location/shape the System Settings KCM uses. Clients get a one-time
+  trust warning; acceptable on LAN/tailnet.
+- **Privilege model:** `configure-ssh-server.sh` auto-sudos (system unit +
+  firewalld). `configure-rdp-server.sh` runs as the user and **refuses root**
+  (config, certs, and the *user* systemd unit all live in `$HOME`); only its
+  firewall step uses inline `sudo`.
+
+## Why SSH (native sshd), not Tailscale-SSH only
+
+`tailscale up --ssh` gives SSH over the tailnet, but only tailnet↔tailnet and only
+while `tailscaled` is up. Native `sshd` works on the LAN, over the tailnet, and
+survives Tailscale outages — so the scripted path enables stock sshd
+(Fedora-default `sshd_config`: key+password, `PermitRootLogin prohibit-password`)
+and leaves Tailscale SSH as an orthogonal add-on.
 
 ## Security Posture
 

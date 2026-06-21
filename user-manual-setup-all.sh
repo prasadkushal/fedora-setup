@@ -18,11 +18,13 @@
 #     4. user-manual-install-tailscale.sh                       (needs login)
 #     5. user-manual-configure-ssh-server.sh                    (remote shell)
 #     6. user-manual-configure-rdp-server.sh                    (KDE only)
-#     7. user-manual-install-quick-access-terminal-shortcut.sh  (KDE only)
-#     8. user-manual-configure-default-terminal.sh              (KDE only)
+#     7. user-manual-configure-xrdp-fallback.sh                 (:3390 fallback)
+#     8. user-manual-configure-remote-access-firewall.sh        (restrict sources)
+#     9. user-manual-install-quick-access-terminal-shortcut.sh  (KDE only)
+#    10. user-manual-configure-default-terminal.sh              (KDE only)
 #
 #   HARDWARE-SPECIFIC (only with --with-nvidia — NEVER automatic):
-#     9. user-manual-install-nvidia-driver.sh  — DO NOT run on non-NVIDIA
+#    11. user-manual-install-nvidia-driver.sh  — DO NOT run on non-NVIDIA
 #        hardware (e.g. the AMD mini-PC). It blacklists nouveau for a Blackwell
 #        GPU and would be wrong elsewhere.
 #
@@ -155,6 +157,16 @@ if _is_kde; then
   fi
 else
   info "(not a KDE session — skipping the krdp RDP server)"
+fi
+
+if _ask_optional "XRDP fallback (:3390 separate session for post-WoL/pre-login GUI; creates a fallback user)"; then
+  _run_child "XRDP fallback" "user-manual-configure-xrdp-fallback.sh" "${_pass_through[@]}" \
+    || { warn "XRDP fallback step failed (continuing)."; _optional_failed=1; }
+fi
+
+if _ask_optional "Remote-access firewall (restrict ssh/rdp/3390 to Users VLAN + Tailscale)"; then
+  _run_child "Remote-access firewall" "user-manual-configure-remote-access-firewall.sh" "${_pass_through[@]}" \
+    || { warn "Remote-access firewall step failed (continuing)."; _optional_failed=1; }
 fi
 
 if _is_kde; then
