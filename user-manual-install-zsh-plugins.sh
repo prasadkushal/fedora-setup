@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
-# user-manual-install-zsh-plugins.sh — Clone the three quality-of-life zsh plugins
+# user-manual-install-zsh-plugins.sh — Clone the quality-of-life zsh plugins
 #
 # What this does:
-#   Clones three zsh-users plugins (depth=1) into ~/.config/zsh/plugins/:
+#   Clones four plugins (depth=1) into ~/.config/zsh/plugins/:
 #     - zsh-autosuggestions       (fish-style inline suggestions from history)
 #     - zsh-syntax-highlighting   (colorize commands as you type — invalid red,
 #                                  strings yellow, valid green)
 #     - zsh-completions           (extra completion definitions for many tools)
+#     - fzf-tab                   (fzf-driven tab completion menu; from Aloxaf,
+#                                  not zsh-users. ~/.zshrc sources it after
+#                                  compinit and before autosuggestions +
+#                                  syntax-highlighting, per its README.)
 #
 # Idempotency:
 #   - If a plugin directory already exists AND is a git repo pointing at the
@@ -80,11 +84,13 @@ PLUGIN_NAMES=(
   zsh-autosuggestions
   zsh-syntax-highlighting
   zsh-completions
+  fzf-tab
 )
 PLUGIN_URLS=(
   "https://github.com/zsh-users/zsh-autosuggestions.git"
   "https://github.com/zsh-users/zsh-syntax-highlighting.git"
   "https://github.com/zsh-users/zsh-completions.git"
+  "https://github.com/Aloxaf/fzf-tab.git"
 )
 
 # ── Clone / update loop ──────────────────────────────────────────────────────

@@ -68,7 +68,7 @@ One-off scripts and notes for setting up a Fedora workstation.
   enable + start `sshd` and ensure the firewalld `ssh` service, for remote
   shell access over LAN and tailnet (independent of Tailscale SSH).
   sshd_config stays at Fedora defaults. Auto-sudo. Supports `--dry-run` and
-  `--no-prompt`. Design: [remote-access spec](docs/specs/2026-06-07-remote-access-design.md).
+  `--no-prompt`. Design: [remote-access spec](docs/specs/2026-06-07-fedora-remote-access-layout.md).
 
 - [`user-manual-configure-rdp-server.sh`](user-manual-configure-rdp-server.sh) —
   KDE only. Enables krdp, KDE's built-in RDP server (preinstalled with Plasma
@@ -79,7 +79,24 @@ One-off scripts and notes for setting up a Fedora workstation.
   it starts with every Plasma login. Runs as the user (refuses root); inline
   sudo only for the firewall step if needed. Works only while a desktop
   session is logged in. Supports `--dry-run` and `--no-prompt`.
-  Design: [remote-access spec](docs/specs/2026-06-07-remote-access-design.md).
+  Design: [remote-access spec](docs/specs/2026-06-07-fedora-remote-access-layout.md).
+
+- [`user-manual-configure-xrdp-fallback.sh`](user-manual-configure-xrdp-fallback.sh) —
+  XRDP on `:3390` serving a **separate** XFCE session (krdp on `:3389` only shares
+  the *live* Plasma session, which doesn't exist after a Wake-on-LAN/cold boot —
+  it drops with `ERRINFO_LOGOFF_BY_USER`). Installs xrdp/xorgxrdp + minimal XFCE,
+  creates a non-admin fallback user (default `<hostname>-rdp`) with a `~/.xsession`,
+  moves xrdp to 3390, and labels the port under SELinux. Auto-sudo; the user's
+  password is set interactively. Supports `--dry-run`, `--no-prompt`, `--user=`,
+  `--port=`. Design: [remote-access layout](docs/specs/2026-06-07-fedora-remote-access-layout.md).
+
+- [`user-manual-configure-remote-access-firewall.sh`](user-manual-configure-remote-access-firewall.sh) —
+  swap the broad firewalld `ssh`/`rdp` services for **source-restricted** rich
+  rules (plus tcp/3390), limited to the Users VLAN (`10.69.11.0/24`) and
+  Tailscale CGNAT (`100.64.0.0/10`) by default (`--source=` to override). Adds
+  the restricted rules before removing the broad ones, with one confirmation
+  gate. Auto-sudo. Supports `--dry-run` and `--no-prompt`.
+  Design: [remote-access layout](docs/specs/2026-06-07-fedora-remote-access-layout.md).
 
 - [`user-manual-install-quick-access-terminal-shortcut.sh`](user-manual-install-quick-access-terminal-shortcut.sh)
   — KDE only. Binds `Meta+Return` to `kitten quick-access-terminal` (a Quake-style
@@ -119,8 +136,9 @@ Or run the five individually, in this order:
   (default: skip). Supports `--dry-run` and `--no-prompt`.
 
 - [`user-manual-install-zsh-plugins.sh`](user-manual-install-zsh-plugins.sh) —
-  shallow-clone the three zsh-users QoL plugins into `~/.config/zsh/plugins/`:
-  `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions`. If a
+  shallow-clone the four QoL plugins into `~/.config/zsh/plugins/`:
+  `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions` (all
+  zsh-users), and `fzf-tab` (Aloxaf — fzf-driven completion menu). If a
   plugin is already present with the expected upstream, offers `git pull --ff-only`
   (default: skip). No sudo. Supports `--dry-run` and `--no-prompt`.
 
