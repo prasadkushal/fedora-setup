@@ -29,7 +29,7 @@ One-off scripts and notes for setting up a Fedora workstation.
 
 **Start here — the single entry point:**
 
-- [`user-manual-setup-all.sh`](user-manual-setup-all.sh) — one-shot, idempotent
+- [`setup-all.sh`](setup-all.sh) — one-shot, idempotent
   setup of a fresh machine. Always runs the two core orchestrators
   (`bootstrap-fedora` → shell environment, then `install-apps` → applications);
   **prompts** for each optional (VS Code, Tailscale, the SSH server, and — on
@@ -41,7 +41,7 @@ One-off scripts and notes for setting up a Fedora workstation.
   `--no-prompt`, `--with-nvidia`, `--dotfiles-dir=<path>`. Everything below can
   also be run individually.
 
-- [`user-manual-install-nvidia-driver.sh`](user-manual-install-nvidia-driver.sh) — install the proprietary NVIDIA
+- [`install/nvidia-driver.sh`](install/nvidia-driver.sh) — install the proprietary NVIDIA
   driver via RPM Fusion. Solves a DisplayPort-retrain-after-suspend bug
   affecting newer NVIDIA GPUs (e.g. RTX 5070 Ti / GB203 Blackwell) under
   the open-source nouveau driver. Re-execs under `sudo` automatically.
@@ -49,13 +49,13 @@ One-off scripts and notes for setting up a Fedora workstation.
   second reboot once the freshly-built module loads. Supports
   `--dry-run` and `--no-prompt`.
 
-- [`user-manual-install-vscode.sh`](user-manual-install-vscode.sh) — install
+- [`install/vscode.sh`](install/vscode.sh) — install
   Visual Studio Code via Microsoft's official RPM repo. Imports the GPG key,
   writes `/etc/yum.repos.d/vscode.repo`, and runs `dnf install code`. Each
   step is idempotent (skips when state already matches). Re-execs under
   `sudo` automatically. Supports `--dry-run` and `--no-prompt`.
 
-- [`user-manual-install-tailscale.sh`](user-manual-install-tailscale.sh) —
+- [`install/tailscale.sh`](install/tailscale.sh) —
   install Tailscale (official Fedora RPM repo), enable `tailscaled`, and enroll
   this machine on your tailnet so it's reachable by Magic DNS name from any of
   your other machines — the "remote access" half of a peers-and-remote setup.
@@ -64,13 +64,13 @@ One-off scripts and notes for setting up a Fedora workstation.
   env var (`--no-prompt`). `--ssh` also turns on Tailscale SSH. Re-execs under
   `sudo -E` (preserving `TS_AUTHKEY`). Supports `--dry-run` and `--no-prompt`.
 
-- [`user-manual-configure-ssh-server.sh`](user-manual-configure-ssh-server.sh) —
+- [`configure/ssh-server.sh`](configure/ssh-server.sh) —
   enable + start `sshd` and ensure the firewalld `ssh` service, for remote
   shell access over LAN and tailnet (independent of Tailscale SSH).
   sshd_config stays at Fedora defaults. Auto-sudo. Supports `--dry-run` and
   `--no-prompt`. Design: [remote-access spec](docs/specs/2026-06-07-fedora-remote-access-layout.md).
 
-- [`user-manual-configure-rdp-server.sh`](user-manual-configure-rdp-server.sh) —
+- [`configure/rdp-server.sh`](configure/rdp-server.sh) —
   KDE only. Enables krdp, KDE's built-in RDP server (preinstalled with Plasma
   ≥ 6.1), which shares the **live Wayland session**: generates a self-signed
   TLS cert, writes `krdpserverrc` with `SystemUserEnabled` (RDP clients log in
@@ -81,7 +81,7 @@ One-off scripts and notes for setting up a Fedora workstation.
   session is logged in. Supports `--dry-run` and `--no-prompt`.
   Design: [remote-access spec](docs/specs/2026-06-07-fedora-remote-access-layout.md).
 
-- [`user-manual-configure-xrdp-fallback.sh`](user-manual-configure-xrdp-fallback.sh) —
+- [`configure/xrdp-fallback.sh`](configure/xrdp-fallback.sh) —
   XRDP on `:3390` serving a **separate** XFCE session (krdp on `:3389` only shares
   the *live* Plasma session, which doesn't exist after a Wake-on-LAN/cold boot —
   it drops with `ERRINFO_LOGOFF_BY_USER`). Installs xrdp/xorgxrdp + minimal XFCE,
@@ -90,7 +90,7 @@ One-off scripts and notes for setting up a Fedora workstation.
   password is set interactively. Supports `--dry-run`, `--no-prompt`, `--user=`,
   `--port=`. Design: [remote-access layout](docs/specs/2026-06-07-fedora-remote-access-layout.md).
 
-- [`user-manual-configure-remote-access-firewall.sh`](user-manual-configure-remote-access-firewall.sh) —
+- [`configure/remote-access-firewall.sh`](configure/remote-access-firewall.sh) —
   swap the broad firewalld `ssh`/`rdp` services for **source-restricted** rich
   rules (plus tcp/3390), limited to the Users VLAN (`10.69.11.0/24`) and
   Tailscale CGNAT (`100.64.0.0/10`) by default (`--source=` to override). Adds
@@ -98,7 +98,7 @@ One-off scripts and notes for setting up a Fedora workstation.
   gate. Auto-sudo. Supports `--dry-run` and `--no-prompt`.
   Design: [remote-access layout](docs/specs/2026-06-07-fedora-remote-access-layout.md).
 
-- [`user-manual-install-quick-access-terminal-shortcut.sh`](user-manual-install-quick-access-terminal-shortcut.sh)
+- [`install/quick-access-terminal-shortcut.sh`](install/quick-access-terminal-shortcut.sh)
   — KDE only. Binds `Meta+Return` to `kitten quick-access-terminal` (a Quake-style
   drop-down terminal) via a `NoDisplay` `.desktop` file plus a
   `[services][…] _launch=Meta+Return` entry in `kglobalshortcutsrc`. Best-effort
@@ -110,7 +110,7 @@ One-off scripts and notes for setting up a Fedora workstation.
 The quickest path is the orchestrator, which runs the five user-level scripts
 below in order (NVIDIA driver excluded — it's workstation-specific):
 
-- [`user-manual-bootstrap-fedora.sh`](user-manual-bootstrap-fedora.sh) —
+- [`bootstrap-fedora.sh`](bootstrap-fedora.sh) —
   sequences `modern-cli-tools` → `starship` → `zsh-plugins` → `deploy-dotfiles`
   → `configure-shell-to-zsh`, gating each step (auto-proceed when
   non-interactive) and aborting on any child failure. Runs as your user — each
@@ -120,7 +120,7 @@ below in order (NVIDIA driver excluded — it's workstation-specific):
 
 Or run the five individually, in this order:
 
-- [`user-manual-install-modern-cli-tools.sh`](user-manual-install-modern-cli-tools.sh)
+- [`install/modern-cli-tools.sh`](install/modern-cli-tools.sh)
   — `dnf install` a curated set of modern CLI replacements + zsh + the kitty
   terminal: `eza`, `bat`, `fd-find`, `zoxide`, `git-delta`, `direnv`, `fzf`,
   `ripgrep`, `nvtop`, `zsh`, `kitty`. (kitty is here because the shell setup is
@@ -129,20 +129,20 @@ Or run the five individually, in this order:
   `rpm -q`'d and skipped if already installed.
   Re-execs under `sudo` automatically. Supports `--dry-run` and `--no-prompt`.
 
-- [`user-manual-install-starship.sh`](user-manual-install-starship.sh) — install
+- [`install/starship.sh`](install/starship.sh) — install
   the [starship](https://starship.rs) cross-shell prompt to `~/.local/bin/` via
   the official installer. Runs as the invoking user (no sudo). If starship is
   already present, reports the version and prompts to re-run the installer
   (default: skip). Supports `--dry-run` and `--no-prompt`.
 
-- [`user-manual-install-zsh-plugins.sh`](user-manual-install-zsh-plugins.sh) —
+- [`install/zsh-plugins.sh`](install/zsh-plugins.sh) —
   shallow-clone the four QoL plugins into `~/.config/zsh/plugins/`:
   `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions` (all
   zsh-users), and `fzf-tab` (Aloxaf — fzf-driven completion menu). If a
   plugin is already present with the expected upstream, offers `git pull --ff-only`
   (default: skip). No sudo. Supports `--dry-run` and `--no-prompt`.
 
-- [`user-manual-configure-shell-to-zsh.sh`](user-manual-configure-shell-to-zsh.sh)
+- [`configure/shell-to-zsh.sh`](configure/shell-to-zsh.sh)
   — symlink `~/.zshenv` + `~/.zshrc` → `~/projects/repos/dotfiles/` (`.zshenv`
   holds PATH/env so `~/.local/bin` tools resolve in non-interactive shells too —
   ssh/cron/systemd; override the repo with `--dotfiles-dir`), append `shell
@@ -152,7 +152,7 @@ Or run the five individually, in this order:
   password via PAM; it's skipped in `--no-prompt` mode with a warning.
   Supports `--dry-run` and `--no-prompt`.
 
-- [`user-manual-deploy-dotfiles.sh`](user-manual-deploy-dotfiles.sh) — walk the
+- [`dotfiles/deploy.sh`](dotfiles/deploy.sh) — walk the
   dotfiles repo (default: `~/projects/repos/dotfiles`) and symlink every
   regular file into the matching path under `~/`. So `<repo>/.zshrc` →
   `~/.zshrc`, `<repo>/.config/kitty/kitty.conf` → `~/.config/kitty/kitty.conf`,
@@ -163,7 +163,7 @@ Or run the five individually, in this order:
   regular file exists, warn+skip on conflicting symlink. No sudo. Supports
   `--dry-run`, `--no-prompt`, `--dotfiles-dir <path>`.
 
-- [`user-manual-reload-dotfiles.sh`](user-manual-reload-dotfiles.sh) — the
+- [`dotfiles/reload.sh`](dotfiles/reload.sh) — the
   ongoing-sync companion to `deploy-dotfiles` (the `reload` idiom: fetch remote
   first, then apply). `git fetch`es the dotfiles repo, reports exactly what
   diverged (incoming/local-only commits, uncommitted changes), then reconciles.
@@ -177,15 +177,15 @@ Or run the five individually, in this order:
   machine to pull the other's committed dotfiles changes.
 
 **Recommended manual run order** for the shell environment (fresh machine) — or
-just run `user-manual-setup-all.sh` (whole machine) or
-`user-manual-bootstrap-fedora.sh` (shell only, which does steps 1–3, 5, 6):
+just run `setup-all.sh` (whole machine) or
+`bootstrap-fedora.sh` (shell only, which does steps 1–3, 5, 6):
 
-1. `user-manual-install-modern-cli-tools.sh`
-2. `user-manual-install-starship.sh`
-3. `user-manual-install-zsh-plugins.sh`
+1. `install/modern-cli-tools.sh`
+2. `install/starship.sh`
+3. `install/zsh-plugins.sh`
 4. Clone the dotfiles repo to `~/projects/repos/dotfiles/`
-5. `user-manual-deploy-dotfiles.sh`
-6. `user-manual-configure-shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
+5. `dotfiles/deploy.sh`
+6. `configure/shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
    are no-ops at this point because step 5 already deployed them)
 
 ### Applications
@@ -195,44 +195,44 @@ one orchestrator (or run the individual installers). NVIDIA is excluded
 (separate, workstation-specific). Design:
 [`docs/specs/2026-06-03-reproduce-manual-apps-design.md`](docs/specs/2026-06-03-reproduce-manual-apps-design.md).
 
-- [`user-manual-install-apps.sh`](user-manual-install-apps.sh) — orchestrator.
+- [`install/apps.sh`](install/apps.sh) — orchestrator.
   Runs the eight app installers below in order (docker → chrome → mullvad →
   flatpaks → node/npm-globals → uv → claude → rmapi), gating each step and passing
   through `--dry-run` / `--no-prompt`. Runs as your user; each child elevates
-  itself if it needs root. Mirrors `user-manual-bootstrap-fedora.sh`.
+  itself if it needs root. Mirrors `bootstrap-fedora.sh`.
 
-- [`user-manual-install-docker.sh`](user-manual-install-docker.sh) — Docker CE
+- [`install/docker.sh`](install/docker.sh) — Docker CE
   via Docker's official repo (engine + cli + buildx + compose + containerd),
   enables the `docker` service, and adds you to the `docker` group (effectively
   root — needs a re-login). Auto-sudo. `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-chrome.sh`](user-manual-install-chrome.sh) — Google
+- [`install/chrome.sh`](install/chrome.sh) — Google
   Chrome (`google-chrome-stable`) via Google's signed repo. Auto-sudo.
   `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-mullvad.sh`](user-manual-install-mullvad.sh) — Mullvad
+- [`install/mullvad.sh`](install/mullvad.sh) — Mullvad
   VPN + browser via Mullvad's signed repo. Auto-sudo. `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-flatpaks.sh`](user-manual-install-flatpaks.sh) — ensure
+- [`install/flatpaks.sh`](install/flatpaks.sh) — ensure
   flatpak + the Flathub remote, then install every app ID in
-  [`flatpak-apps.list`](flatpak-apps.list) (Obsidian, GIMP, Zen, Firefox),
+  [`install/flatpak-apps.list`](install/flatpak-apps.list) (Obsidian, GIMP, Zen, Firefox),
   skipping already-installed. System-wide by default (auto-sudo); `--user` flips
   to per-user (no sudo). `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-node-and-npm-globals.sh`](user-manual-install-node-and-npm-globals.sh)
+- [`install/node-and-npm-globals.sh`](install/node-and-npm-globals.sh)
   — `dnf install nodejs npm`, then `npm install -g` each entry in
-  [`npm-globals.list`](npm-globals.list) (`@openai/codex`, `firebase-tools`).
+  [`install/npm-globals.list`](install/npm-globals.list) (`@openai/codex`, `firebase-tools`).
   Auto-sudo (global prefix is `/usr/local`). `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-uv.sh`](user-manual-install-uv.sh) — Astral `uv` (Python
+- [`install/uv.sh`](install/uv.sh) — Astral `uv` (Python
   package/project manager; also `uvx`) to `~/.local/bin` via the official
   installer. No sudo. `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-claude.sh`](user-manual-install-claude.sh) — the Claude
+- [`install/claude.sh`](install/claude.sh) — the Claude
   Code CLI via its official native installer, to `~/.local/bin`. No sudo.
   `--dry-run` / `--no-prompt`.
 
-- [`user-manual-install-rmapi.sh`](user-manual-install-rmapi.sh) — the `rmapi`
+- [`install/rmapi.sh`](install/rmapi.sh) — the `rmapi`
   reMarkable CLI: downloads the latest `ddvk/rmapi` release (the maintained fork)
   for your arch and installs it to `~/.local/bin`. No sudo; refuses root;
   idempotent (re-download prompt if already present). `--dry-run` / `--no-prompt`.

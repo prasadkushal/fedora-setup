@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-node-and-npm-globals.sh — Install Node.js + npm, then install npm globals
+# install/node-and-npm-globals.sh — Install Node.js + npm, then install npm globals
 #
 # What this does:
 #   1. Ensures Node.js and npm are installed via dnf (skips each if already present).
@@ -11,9 +11,9 @@
 #   unprivileged for state checks only).
 #
 # Usage:
-#   ./user-manual-install-node-and-npm-globals.sh             # interactive
-#   ./user-manual-install-node-and-npm-globals.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-node-and-npm-globals.sh --dry-run   # show, change nothing
+#   ./install/node-and-npm-globals.sh             # interactive
+#   ./install/node-and-npm-globals.sh --no-prompt # non-interactive, idempotent
+#   ./install/node-and-npm-globals.sh --dry-run   # show, change nothing
 
 set -euo pipefail
 

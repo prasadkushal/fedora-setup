@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-docker.sh — Install Docker CE on Fedora
+# install/docker.sh — Install Docker CE on Fedora
 #
 # What this does:
 #   Gives you a fully-working Docker CE install via Docker's official repo:
@@ -13,9 +13,9 @@
 #        A fresh login is required for the group to take effect.
 #
 # Usage:
-#   ./user-manual-install-docker.sh                  # interactive
-#   ./user-manual-install-docker.sh --no-prompt      # unattended (auto-confirms)
-#   ./user-manual-install-docker.sh --dry-run        # show what would happen, change nothing
+#   ./install/docker.sh                  # interactive
+#   ./install/docker.sh --no-prompt      # unattended (auto-confirms)
+#   ./install/docker.sh --dry-run        # show what would happen, change nothing
 #
 # Auto-sudo: installing packages + managing the docker service needs root; this
 # re-execs under `sudo -E`. State checks run unprivileged (--dry-run stays as

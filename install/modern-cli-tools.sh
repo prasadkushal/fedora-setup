@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-modern-cli-tools.sh — Install modern CLI tool replacements via dnf
+# install/modern-cli-tools.sh — Install modern CLI tool replacements via dnf
 #
 # What this does:
 #   Installs a curated set of modern command-line tools (replacements/complements
@@ -13,7 +13,7 @@
 #     fzf         — fuzzy finder (Ctrl+R / Ctrl+T / Alt+C bindings in shells)
 #     ripgrep     — faster, gitignore-aware `grep`
 #     nvtop       — GPU monitor (NVIDIA, AMD, Intel)
-#     zsh         — z shell (target shell for user-manual-configure-shell-to-zsh.sh)
+#     zsh         — z shell (target shell for configure/shell-to-zsh.sh)
 #     kitty       — GPU terminal emulator. Not a POSIX replacement, but the rest
 #                   of the setup is kitty-centric (configure-shell-to-zsh pins
 #                   kitty's `shell`; quick-access-terminal-shortcut needs kitten;
@@ -25,9 +25,9 @@
 # skipped. The remaining set is installed with a single `dnf install -y`.
 #
 # Usage:
-#   ./user-manual-install-modern-cli-tools.sh             # interactive
-#   ./user-manual-install-modern-cli-tools.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-modern-cli-tools.sh --dry-run   # show, change nothing
+#   ./install/modern-cli-tools.sh             # interactive
+#   ./install/modern-cli-tools.sh --no-prompt # non-interactive, idempotent
+#   ./install/modern-cli-tools.sh --dry-run   # show, change nothing
 
 set -euo pipefail
 

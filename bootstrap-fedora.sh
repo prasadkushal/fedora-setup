@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-bootstrap-fedora.sh
+# bootstrap-fedora.sh
 # Orchestrate the fresh-machine bootstrap: run the five user-level setup
 # scripts in the documented order (NVIDIA driver intentionally excluded — it
 # is workstation-specific; see USAGI.md). Each child script keeps its own
@@ -7,10 +7,10 @@
 # sequences them and gates each step.
 #
 # Usage:
-#   ./user-manual-bootstrap-fedora.sh                 # confirm before each step
-#   ./user-manual-bootstrap-fedora.sh --dry-run       # preview (passed to children)
-#   ./user-manual-bootstrap-fedora.sh --no-prompt     # run all 5, no gating
-#   ./user-manual-bootstrap-fedora.sh --dotfiles-dir ~/projects/repos/dotfiles
+#   ./bootstrap-fedora.sh                 # confirm before each step
+#   ./bootstrap-fedora.sh --dry-run       # preview (passed to children)
+#   ./bootstrap-fedora.sh --no-prompt     # run all 5, no gating
+#   ./bootstrap-fedora.sh --dotfiles-dir ~/projects/repos/dotfiles
 #
 # Why no auto-sudo here: only modern-cli-tools needs root and it re-execs
 # under sudo itself. The other four create files in the invoking user's HOME;
@@ -54,11 +54,11 @@ fi
 # ── The sequence (NVIDIA driver intentionally excluded) ───────────────────────
 # Steps 4 and 5 also accept --dotfiles-dir; it is appended for those only.
 _steps=(
-  "user-manual-install-modern-cli-tools.sh"
-  "user-manual-install-starship.sh"
-  "user-manual-install-zsh-plugins.sh"
-  "user-manual-deploy-dotfiles.sh"
-  "user-manual-configure-shell-to-zsh.sh"
+  "install/modern-cli-tools.sh"
+  "install/starship.sh"
+  "install/zsh-plugins.sh"
+  "dotfiles/deploy.sh"
+  "configure/shell-to-zsh.sh"
 )
 
 # ── Dependency check: every child must exist and be executable ────────────────
@@ -97,8 +97,8 @@ for _s in "${_steps[@]}"; do
   # Assemble args: common pass-through + --dotfiles-dir for the two that take it
   _args=("${_pass_through[@]}")
   if [ -n "$_DOTFILES_DIR" ] && \
-     { [ "$_s" = "user-manual-deploy-dotfiles.sh" ] || \
-       [ "$_s" = "user-manual-configure-shell-to-zsh.sh" ]; }; then
+     { [ "$_s" = "dotfiles/deploy.sh" ] || \
+       [ "$_s" = "configure/shell-to-zsh.sh" ]; }; then
     _args+=("--dotfiles-dir" "$_DOTFILES_DIR")
   fi
 

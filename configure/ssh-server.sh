@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-configure-ssh-server.sh — Enable the OpenSSH server for remote shell access
+# configure/ssh-server.sh — Enable the OpenSSH server for remote shell access
 #
 # What this does:
 #   Makes this machine reachable over SSH (LAN and tailnet) instead of relying
@@ -15,9 +15,9 @@
 #   ever exposed beyond LAN/tailnet.
 #
 # Usage:
-#   ./user-manual-configure-ssh-server.sh              # interactive
-#   ./user-manual-configure-ssh-server.sh --no-prompt  # unattended
-#   ./user-manual-configure-ssh-server.sh --dry-run    # show, change nothing
+#   ./configure/ssh-server.sh              # interactive
+#   ./configure/ssh-server.sh --no-prompt  # unattended
+#   ./configure/ssh-server.sh --dry-run    # show, change nothing
 #
 # Auto-sudo: managing sshd + firewalld needs root; this re-execs under sudo.
 # State checks run unprivileged in --dry-run.

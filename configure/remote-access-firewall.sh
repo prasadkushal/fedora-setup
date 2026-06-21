@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-configure-remote-access-firewall.sh — Restrict SSH/RDP to trusted source networks
+# configure/remote-access-firewall.sh — Restrict SSH/RDP to trusted source networks
 #
 # What this solves:
 #   The `configure-ssh-server` / `configure-rdp-server` scripts open the `ssh`
@@ -22,10 +22,10 @@
 #     100.64.0.0/10   (Tailscale CGNAT)
 #
 # Usage:
-#   ./user-manual-configure-remote-access-firewall.sh
-#   ./user-manual-configure-remote-access-firewall.sh --source=10.69.11.0/24 --source=100.64.0.0/10
-#   ./user-manual-configure-remote-access-firewall.sh --no-prompt
-#   ./user-manual-configure-remote-access-firewall.sh --dry-run
+#   ./configure/remote-access-firewall.sh
+#   ./configure/remote-access-firewall.sh --source=10.69.11.0/24 --source=100.64.0.0/10
+#   ./configure/remote-access-firewall.sh --no-prompt
+#   ./configure/remote-access-firewall.sh --dry-run
 #
 # Auto-sudo: editing firewalld needs root; this re-execs under sudo. State
 # checks (--dry-run) run unprivileged. Spec:

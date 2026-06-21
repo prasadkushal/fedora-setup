@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-configure-xrdp-fallback.sh — XRDP fallback desktop on :3390 (separate session)
+# configure/xrdp-fallback.sh — XRDP fallback desktop on :3390 (separate session)
 #
 # What this solves:
 #   KDE's krdp (:3389) shares the *live* Plasma session — useless when the
@@ -22,15 +22,15 @@
 #   4. SELinux: label tcp/3390 as an rdp port if enforcing (else xrdp can't bind).
 #   5. enable --now xrdp + xrdp-sesman; verify 3390 is listening.
 #
-#   Firewall for 3390 is handled by user-manual-configure-remote-access-firewall.sh
+#   Firewall for 3390 is handled by configure/remote-access-firewall.sh
 #   (which opens it to the allowed source networks) — run that too.
 #
 # Usage:
-#   ./user-manual-configure-xrdp-fallback.sh                 # interactive (prompts to set the user's password)
-#   ./user-manual-configure-xrdp-fallback.sh --user=usagi-rdp
-#   ./user-manual-configure-xrdp-fallback.sh --port=3390
-#   ./user-manual-configure-xrdp-fallback.sh --no-prompt     # skips the interactive passwd (warns)
-#   ./user-manual-configure-xrdp-fallback.sh --dry-run
+#   ./configure/xrdp-fallback.sh                 # interactive (prompts to set the user's password)
+#   ./configure/xrdp-fallback.sh --user=usagi-rdp
+#   ./configure/xrdp-fallback.sh --port=3390
+#   ./configure/xrdp-fallback.sh --no-prompt     # skips the interactive passwd (warns)
+#   ./configure/xrdp-fallback.sh --dry-run
 #
 # Auto-sudo: package install + system services + user creation need root; this
 # re-execs under sudo. State checks (--dry-run) run unprivileged.
@@ -212,5 +212,5 @@ else
   info "  host:  $(hostname -s):$_PORT     login: $_USER + its password"
   info "  e.g.   xfreerdp /v:$(hostname -s) /port:$_PORT /u:$_USER /cert:ignore"
   info "Open the port to your trusted networks with:"
-  info "  ./user-manual-configure-remote-access-firewall.sh"
+  info "  ./configure/remote-access-firewall.sh"
 fi

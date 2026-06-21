@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-rmapi.sh — Install the rmapi reMarkable CLI
+# install/rmapi.sh — Install the rmapi reMarkable CLI
 #
 # What this does:
 #   Downloads the latest `rmapi` release (the maintained ddvk/rmapi fork — note
@@ -13,9 +13,9 @@
 #   - Otherwise download + install.
 #
 # Usage:
-#   ./user-manual-install-rmapi.sh             # interactive
-#   ./user-manual-install-rmapi.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-rmapi.sh --dry-run   # show, change nothing
+#   ./install/rmapi.sh             # interactive
+#   ./install/rmapi.sh --no-prompt # non-interactive, idempotent
+#   ./install/rmapi.sh --dry-run   # show, change nothing
 #
 # Note: This script does NOT require sudo. rmapi installs to ~/.local/bin/ and
 # runs as the invoking user. (Running with `sudo` would install into /root.)

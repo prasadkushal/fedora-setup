@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-configure-rdp-server.sh — Enable KDE's built-in RDP server (krdp)
+# configure/rdp-server.sh — Enable KDE's built-in RDP server (krdp)
 #
 # What this does:
 #   Makes this machine's desktop reachable over RDP without clicking through
@@ -24,9 +24,9 @@
 #   - The cert is self-signed: clients show a one-time trust warning.
 #
 # Usage:
-#   ./user-manual-configure-rdp-server.sh              # interactive
-#   ./user-manual-configure-rdp-server.sh --no-prompt  # unattended
-#   ./user-manual-configure-rdp-server.sh --dry-run    # show, change nothing
+#   ./configure/rdp-server.sh              # interactive
+#   ./configure/rdp-server.sh --no-prompt  # unattended
+#   ./configure/rdp-server.sh --dry-run    # show, change nothing
 #
 # This script runs as your normal user and REFUSES root: the config, certs,
 # and systemd unit are all per-user. Only the firewall step (if needed) uses

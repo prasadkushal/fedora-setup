@@ -17,12 +17,12 @@ stack onto hardware that has no NVIDIA GPU.
 | Discrete GPU | NVIDIA RTX 5070 Ti (GB203 Blackwell) | none |
 | Integrated GPU | AMD Raphael iGPU | AMD Radeon APU |
 
-**Do NOT run `user-manual-install-nvidia-driver.sh` on the usagi mini-PC.** It is the
+**Do NOT run `install/nvidia-driver.sh` on the usagi mini-PC.** It is the
 only workstation-specific script in this repo. The SER6's Radeon graphics use
 the in-kernel `amdgpu` driver that ships with stock Fedora — nothing to install,
 nothing to blacklist. Every other script in this repo applies cleanly.
 
-The `user-manual-bootstrap-fedora.sh` orchestrator codifies exactly the Step 2
+The `bootstrap-fedora.sh` orchestrator codifies exactly the Step 2
 sequence below (NVIDIA omitted), so on the usagi mini-PC you can run that one script
 instead of the five individually.
 
@@ -32,7 +32,7 @@ instead of the five individually.
 
 1. **Install Fedora 43 KDE Plasma** from the official ISO. Match the
    workstation's release (43) and desktop. KDE is assumed because
-   `user-manual-install-quick-access-terminal-shortcut.sh` targets KDE's
+   `install/quick-access-terminal-shortcut.sh` targets KDE's
    `kded6` / `kglobalshortcutsrc`.
 2. **Set the hostname:**
    ```bash
@@ -67,7 +67,7 @@ git clone <remote>/claude-setup.git
 
 ## Step 2 — bootstrap scripts
 
-**Single command for the whole machine:** `./user-manual-setup-all.sh` runs the
+**Single command for the whole machine:** `./setup-all.sh` runs the
 shell-environment bootstrap *and* the application set (Step 2 + the Applications
 step below) in one go, prompting for each optional. On the usagi mini-PC do **not**
 pass `--with-nvidia` (AMD APU). Preview with `--dry-run` first. The rest of this
@@ -79,11 +79,11 @@ the five scripts below in order (NVIDIA omitted) and passes through `--dry-run` 
 
 ```bash
 cd ~/projects/repos/fedora-setup
-./user-manual-setup-all.sh --dry-run          # preview EVERYTHING (shell + apps)
-./user-manual-setup-all.sh                    # the whole machine, prompts for optionals
+./setup-all.sh --dry-run          # preview EVERYTHING (shell + apps)
+./setup-all.sh                    # the whole machine, prompts for optionals
 # …or just the shell environment:
-./user-manual-bootstrap-fedora.sh --dry-run   # preview first
-./user-manual-bootstrap-fedora.sh             # real run
+./bootstrap-fedora.sh --dry-run   # preview first
+./bootstrap-fedora.sh             # real run
 ```
 
 If you'd rather run them by hand, this is the equivalent sequence. Do a
@@ -92,22 +92,22 @@ package, skip-if-correct-symlink per file), so re-running is safe.
 
 | # | Command | What it does | sudo? |
 |---|---|---|---|
-| 1 | `./user-manual-install-modern-cli-tools.sh` | dnf-installs eza/bat/fd-find/zoxide/git-delta/direnv/fzf/ripgrep/nvtop + zsh | auto |
-| 2 | `./user-manual-install-starship.sh` | starship prompt → `~/.local/bin` | no |
-| 3 | `./user-manual-install-zsh-plugins.sh` | clones autosuggestions / syntax-highlighting / completions into `~/.config/zsh/plugins/` | no |
-| 4 | `./user-manual-deploy-dotfiles.sh` | symlinks `~/.zshrc`, `~/.bashrc`, `~/.config/kitty/*`, `~/.claude/settings.local.json` from the dotfiles repo | no |
-| 5 | `./user-manual-configure-shell-to-zsh.sh` | `chsh -s /bin/zsh` + kitty `shell` override (prompts for password via PAM) | no |
+| 1 | `./install/modern-cli-tools.sh` | dnf-installs eza/bat/fd-find/zoxide/git-delta/direnv/fzf/ripgrep/nvtop + zsh | auto |
+| 2 | `./install/starship.sh` | starship prompt → `~/.local/bin` | no |
+| 3 | `./install/zsh-plugins.sh` | clones autosuggestions / syntax-highlighting / completions into `~/.config/zsh/plugins/` | no |
+| 4 | `./dotfiles/deploy.sh` | symlinks `~/.zshrc`, `~/.bashrc`, `~/.config/kitty/*`, `~/.claude/settings.local.json` from the dotfiles repo | no |
+| 5 | `./configure/shell-to-zsh.sh` | `chsh -s /bin/zsh` + kitty `shell` override (prompts for password via PAM) | no |
 
 ### Optional extras (not run by the orchestrator)
 
 | Command | When | sudo? |
 |---|---|---|
-| `./user-manual-install-vscode.sh` | if you want VS Code | auto |
-| `./user-manual-install-quick-access-terminal-shortcut.sh` | KDE only — binds `Meta+Return` to a quick-access terminal | no |
-| `./user-manual-install-tailscale.sh` | remote access — reach the workstation (and vice-versa) by Magic DNS name from anywhere | auto |
+| `./install/vscode.sh` | if you want VS Code | auto |
+| `./install/quick-access-terminal-shortcut.sh` | KDE only — binds `Meta+Return` to a quick-access terminal | no |
+| `./install/tailscale.sh` | remote access — reach the workstation (and vice-versa) by Magic DNS name from anywhere | auto |
 
 After Tailscale is up on both boxes, keep them in sync with
-`./user-manual-reload-dotfiles.sh` on each machine: it pulls the other's
+`./dotfiles/reload.sh` on each machine: it pulls the other's
 committed dotfiles changes and re-links any new files. Because the dotfiles are
 symlinks into the repo, the pull updates your live config in place. The flow for
 a config change is: edit on machine A → commit & push (or let
@@ -119,7 +119,7 @@ Reproduce the workstation's manually-installed apps with the orchestrator
 (design: `docs/specs/2026-06-03-reproduce-manual-apps-design.md`):
 
 ```bash
-./user-manual-install-apps.sh            # docker, chrome, mullvad, flatpaks,
+./install/apps.sh            # docker, chrome, mullvad, flatpaks,
                                          # node+npm globals, uv, claude
 ```
 
@@ -128,11 +128,11 @@ Notes:
 - **Docker** adds you to the `docker` group (effectively root) — **log out and
   back in** before `docker` works without sudo.
 - The **flatpaks** (Obsidian, GIMP, Zen, Firefox) are GUI apps — they need a
-  desktop session to launch. Edit `flatpak-apps.list` to curate the set.
+  desktop session to launch. Edit `install/flatpak-apps.list` to curate the set.
 - `uv` and `claude` install to `~/.local/bin` (already on PATH via the dotfiles).
 - NVIDIA is **not** part of this set (workstation-specific).
 - Curate before running: the set reflects the workstation. Drop anything the
-  usagi doesn't need by editing `user-manual-install-apps.sh`'s step list or
+  usagi doesn't need by editing `install/apps.sh`'s step list or
   the manifests.
 
 ---
@@ -199,17 +199,17 @@ git clone <remote>/claude-setup.git
 
 # Step 2 (NVIDIA script intentionally omitted — AMD APU):
 cd ~/projects/repos/fedora-setup
-./user-manual-bootstrap-fedora.sh
-# optional: ./user-manual-install-vscode.sh
-# optional (KDE): ./user-manual-install-quick-access-terminal-shortcut.sh
+./bootstrap-fedora.sh
+# optional: ./install/vscode.sh
+# optional (KDE): ./install/quick-access-terminal-shortcut.sh
 
 # Applications (curate first — reflects the workstation; docker needs a re-login):
-./user-manual-install-apps.sh
+./install/apps.sh
 
 # Remote access (peers + remote): enroll on the tailnet.
 # Interactive prints a browser login URL; unattended needs TS_AUTHKEY.
-./user-manual-install-tailscale.sh            # add --ssh to enable Tailscale SSH
+./install/tailscale.sh            # add --ssh to enable Tailscale SSH
 
 # Thereafter, pull the workstation's committed dotfiles changes anytime:
-./user-manual-reload-dotfiles.sh
+./dotfiles/reload.sh
 ```

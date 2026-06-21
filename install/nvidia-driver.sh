@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-nvidia-driver.sh — Install proprietary NVIDIA driver on Fedora
+# install/nvidia-driver.sh — Install proprietary NVIDIA driver on Fedora
 #
 # Problem this solves:
 #   The nouveau (open-source) driver fails to re-train DisplayPort links after
@@ -14,9 +14,9 @@
 #   4. Instructs on the two-reboot process required to complete the switch
 #
 # Usage:
-#   ./user-manual-install-nvidia-driver.sh                # interactive
-#   ./user-manual-install-nvidia-driver.sh --no-prompt    # non-interactive, idempotent
-#   ./user-manual-install-nvidia-driver.sh --dry-run      # show what would happen, change nothing
+#   ./install/nvidia-driver.sh                # interactive
+#   ./install/nvidia-driver.sh --no-prompt    # non-interactive, idempotent
+#   ./install/nvidia-driver.sh --dry-run      # show what would happen, change nothing
 
 set -euo pipefail
 

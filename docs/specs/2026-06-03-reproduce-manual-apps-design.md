@@ -37,16 +37,16 @@ signed-repo setup each dnf app needs).
 
 ### Tier ① — per-tool dnf scripts
 
-Each mirrors `user-manual-install-vscode.sh` / `-tailscale.sh`: Fedora pre-flight
+Each mirrors `install/vscode.sh` / `-tailscale.sh`: Fedora pre-flight
 check, auto-sudo via `sudo -E`, idempotent (`rpm -q` + repo-file existence),
 `--dry-run` / `--no-prompt` / `--help`. Packages install latest-from-repo (no
 version pinning — consistent with existing scripts).
 
 | Script | Repo setup | Packages | Extra |
 |---|---|---|---|
-| `user-manual-install-docker.sh` | write `/etc/yum.repos.d/docker-ce.repo` from `https://download.docker.com/linux/fedora/docker-ce.repo` | `docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin` | `systemctl enable --now docker`; add invoking user to `docker` group |
-| `user-manual-install-chrome.sh` | write `/etc/yum.repos.d/google-chrome.repo` (baseurl `https://dl.google.com/linux/chrome/rpm/stable/x86_64`, gpgkey `https://dl.google.com/linux/linux_signing_key.pub`) | `google-chrome-stable` | — |
-| `user-manual-install-mullvad.sh` | `curl` `https://repository.mullvad.net/rpm/stable/mullvad.repo` → `/etc/yum.repos.d/` | `mullvad-vpn mullvad-browser` | — |
+| `install/docker.sh` | write `/etc/yum.repos.d/docker-ce.repo` from `https://download.docker.com/linux/fedora/docker-ce.repo` | `docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin` | `systemctl enable --now docker`; add invoking user to `docker` group |
+| `install/chrome.sh` | write `/etc/yum.repos.d/google-chrome.repo` (baseurl `https://dl.google.com/linux/chrome/rpm/stable/x86_64`, gpgkey `https://dl.google.com/linux/linux_signing_key.pub`) | `google-chrome-stable` | — |
+| `install/mullvad.sh` | `curl` `https://repository.mullvad.net/rpm/stable/mullvad.repo` → `/etc/yum.repos.d/` | `mullvad-vpn mullvad-browser` | — |
 
 **Docker specifics:**
 - The `docker` group is **root-equivalent**. The script adds the user anyway (it
@@ -65,7 +65,7 @@ version pinning — consistent with existing scripts).
   app.zen_browser.zen
   org.mozilla.firefox
   ```
-- **`user-manual-install-flatpaks.sh`** — ensure `flatpak` is installed (`dnf
+- **`install/flatpaks.sh`** — ensure `flatpak` is installed (`dnf
   install flatpak` if missing) → `flatpak remote-add --if-not-exists flathub
   https://dl.flathub.org/repo/flathub.flatpakrepo` → install each manifest entry,
   skipping any already present (`flatpak info <id>`).
@@ -77,14 +77,14 @@ version pinning — consistent with existing scripts).
 
 ### Tier ③ — CLI tools
 
-- **`user-manual-install-uv.sh`** — `curl -LsSf https://astral.sh/uv/install.sh
+- **`install/uv.sh`** — `curl -LsSf https://astral.sh/uv/install.sh
   | sh` into `~/.local/bin`. No sudo; **refuses to run as root** (like starship).
   Idempotent: if `~/.local/bin/uv` exists, report version and prompt to re-run
   the installer (default skip).
-- **`user-manual-install-claude.sh`** — Claude Code's official installer
+- **`install/claude.sh`** — Claude Code's official installer
   (`curl -fsSL https://claude.ai/install.sh | bash`; exact URL/flags verified at
   implementation). No sudo; refuses root; idempotent on `command -v claude`.
-- **`npm-globals.list`** + **`user-manual-install-node-and-npm-globals.sh`** —
+- **`npm-globals.list`** + **`install/node-and-npm-globals.sh`** —
   `dnf install nodejs npm`, then `npm install -g` each manifest entry. The global
   prefix is `/usr/local`, so this needs root → auto-sudo. Idempotent via
   `npm ls -g <pkg>`. Manifest (exact npm package names confirmed at
@@ -93,14 +93,14 @@ version pinning — consistent with existing scripts).
   @openai/codex
   firebase-tools
   ```
-- **Modify `user-manual-install-modern-cli-tools.sh`** — add `git-filter-repo`
+- **Modify `install/modern-cli-tools.sh`** — add `git-filter-repo`
   (stock Fedora dnf package) to the `PACKAGES` array + header list.
 
 ### Orchestrator
 
-- **`user-manual-install-apps.sh`** — sequences the app installers with per-step
+- **`install/apps.sh`** — sequences the app installers with per-step
   gating and `--dry-run` / `--no-prompt` / `--dotfiles-dir`-style pass-through,
-  structured exactly like `user-manual-bootstrap-fedora.sh`. Runs as the
+  structured exactly like `bootstrap-fedora.sh`. Runs as the
   user; children self-elevate where needed (the `uv`/`claude` children refuse
   root, so the orchestrator must not run under sudo). Order:
   1. `install-docker.sh`, `install-chrome.sh`, `install-mullvad.sh`
@@ -156,5 +156,5 @@ version pinning — consistent with existing scripts).
 ## Post-implementation additions
 
 - `rmapi` (reMarkable CLI) was in the workstation inventory but initially omitted;
-  added later as `user-manual-install-rmapi.sh` (downloads the maintained
+  added later as `install/rmapi.sh` (downloads the maintained
   `ddvk/rmapi` release to `~/.local/bin`) and appended to `install-apps.sh`.

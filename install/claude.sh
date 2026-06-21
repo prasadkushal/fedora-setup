@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-claude.sh — Install the Claude Code CLI
+# install/claude.sh — Install the Claude Code CLI
 #
 # What this does:
 #   Downloads and runs the official Claude Code native installer
@@ -14,9 +14,9 @@
 #   - Otherwise it runs the installer.
 #
 # Usage:
-#   ./user-manual-install-claude.sh             # interactive
-#   ./user-manual-install-claude.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-claude.sh --dry-run   # show, change nothing
+#   ./install/claude.sh             # interactive
+#   ./install/claude.sh --no-prompt # non-interactive, idempotent
+#   ./install/claude.sh --dry-run   # show, change nothing
 #
 # Note: This script does NOT require sudo. The Claude Code installer places
 # `claude` in ~/.local/bin/ and runs as the invoking user. (Re-running with

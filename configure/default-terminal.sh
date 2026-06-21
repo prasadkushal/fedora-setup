@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-configure-default-terminal.sh — Make kitty the default terminal under KDE Plasma
+# configure/default-terminal.sh — Make kitty the default terminal under KDE Plasma
 #
 # Problem this solves:
 #   On a fresh Fedora KDE install, Ctrl+Alt+T launches Konsole (Konsole's own
@@ -42,9 +42,9 @@
 #   - A spot-check warns if any OTHER service also binds Ctrl+Alt+T.
 #
 # Usage:
-#   ./user-manual-configure-default-terminal.sh             # interactive
-#   ./user-manual-configure-default-terminal.sh --no-prompt # idempotent, overwrites collisions
-#   ./user-manual-configure-default-terminal.sh --dry-run   # show, change nothing
+#   ./configure/default-terminal.sh             # interactive
+#   ./configure/default-terminal.sh --no-prompt # idempotent, overwrites collisions
+#   ./configure/default-terminal.sh --dry-run   # show, change nothing
 #
 # This script does NOT require sudo. Both target files live under $HOME.
 
@@ -89,7 +89,7 @@ ask() {
 # ── Pre-flight ───────────────────────────────────────────────────────────────
 [ "$EUID" -eq 0 ] && die "Don't run this as root — files go under \$HOME."
 
-command -v kitty          >/dev/null || die "kitty not found. Install kitty first (user-manual-install-modern-cli-tools.sh)."
+command -v kitty          >/dev/null || die "kitty not found. Install kitty first (install/modern-cli-tools.sh)."
 command -v kwriteconfig6  >/dev/null || die "kwriteconfig6 not found. Install kf6-kconfig (Fedora package)."
 command -v kreadconfig6   >/dev/null || die "kreadconfig6 not found. Install kf6-kconfig (Fedora package)."
 

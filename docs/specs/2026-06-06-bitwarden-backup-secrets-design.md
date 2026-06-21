@@ -116,7 +116,7 @@ Known residual risk:
 ## Installer follow-up
 
 After the backup substrate exists, add a script such as
-`user-manual-install-oaknet-backup-client.sh`.
+`install/oaknet-backup-client.sh`.
 
 The script should:
 

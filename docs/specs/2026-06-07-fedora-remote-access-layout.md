@@ -13,12 +13,12 @@ autologin or broad LAN/WAN exposure.
 
 | Piece | Scripted? | On `prime` | On `usagi` |
 |---|---|---|---|
-| OpenSSH server | ✅ `user-manual-configure-ssh-server.sh` | ✅ | ✅ |
-| KDE RDP (`krdp`, :3389) | ✅ `user-manual-configure-rdp-server.sh` | ✅ | ✅ |
+| OpenSSH server | ✅ `configure/ssh-server.sh` | ✅ | ✅ |
+| KDE RDP (`krdp`, :3389) | ✅ `configure/rdp-server.sh` | ✅ | ✅ |
 | XRDP fallback (:3390) + fallback user | ❌ manual sketch (below) | ✅ | ❌ not yet |
 | Source-restricted firewall (rich rules) | ❌ scripts add the broad service only | ✅ (manual) | ❌ broad service, open to all sources |
 
-The two `user-manual-configure-*` scripts each ensure their firewalld *service*
+The two `configure/*` scripts each ensure their firewalld *service*
 (`ssh` / `rdp`) in the default zone — open to every source. The
 source-restriction (Users VLAN + Tailscale CGNAT) in **Security Posture** below
 is not yet scripted; on `prime` it was applied by hand.
@@ -65,7 +65,7 @@ autologin.
 - **Auth = system user (PAM).** `krdpserverrc` sets `SystemUserEnabled=true`; RDP
   clients log in with the machine's Linux username + password. No second secret
   to provision (vs. the KCM's KWallet-stored per-server credential, which can't
-  be set up headlessly). This is what makes `user-manual-configure-rdp-server.sh`
+  be set up headlessly). This is what makes `configure/rdp-server.sh`
   idempotent and secret-free.
 - **TLS:** krdpserver requires a cert; the script generates a self-signed pair
   under `~/.local/share/krdpserver/` (openssl, 10y, key `chmod 600`) when absent

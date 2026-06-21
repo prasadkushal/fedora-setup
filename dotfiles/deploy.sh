@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-deploy-dotfiles.sh — Symlink every file in the dotfiles repo into ~/
+# dotfiles/deploy.sh — Symlink every file in the dotfiles repo into ~/
 #
 # What this does:
 #   Walks the dotfiles repo (default: ~/projects/repos/dotfiles) and creates a
@@ -34,10 +34,10 @@
 # keep it as a real per-machine file.
 #
 # Usage:
-#   ./user-manual-deploy-dotfiles.sh                       # interactive
-#   ./user-manual-deploy-dotfiles.sh --no-prompt           # non-interactive
-#   ./user-manual-deploy-dotfiles.sh --dry-run             # show, change nothing
-#   ./user-manual-deploy-dotfiles.sh --dotfiles-dir <path> # override default repo location
+#   ./dotfiles/deploy.sh                       # interactive
+#   ./dotfiles/deploy.sh --no-prompt           # non-interactive
+#   ./dotfiles/deploy.sh --dry-run             # show, change nothing
+#   ./dotfiles/deploy.sh --dotfiles-dir <path> # override default repo location
 #
 # Note: This script does NOT auto-sudo. All operations are in the user's $HOME.
 

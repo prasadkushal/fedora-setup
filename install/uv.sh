@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-install-uv.sh — Install Astral's uv Python package/project manager
+# install/uv.sh — Install Astral's uv Python package/project manager
 #
 # What this does:
 #   Downloads and runs the official uv installer
@@ -14,9 +14,9 @@
 #   - Otherwise it runs the installer.
 #
 # Usage:
-#   ./user-manual-install-uv.sh             # interactive
-#   ./user-manual-install-uv.sh --no-prompt # non-interactive, idempotent
-#   ./user-manual-install-uv.sh --dry-run   # show, change nothing
+#   ./install/uv.sh             # interactive
+#   ./install/uv.sh --no-prompt # non-interactive, idempotent
+#   ./install/uv.sh --dry-run   # show, change nothing
 #
 # Note: This script does NOT require sudo. uv installs to ~/.local/bin/
 # and runs as the invoking user. (Re-running with `sudo` would install into
