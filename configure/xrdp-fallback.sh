@@ -10,7 +10,7 @@
 #   console logged in).
 #
 #   Layout (see docs/specs/2026-06-07-fedora-remote-access-layout.md):
-#     :3389  KDE krdp  — live Plasma session   (configure-rdp-server.sh)
+#     :3389  KDE krdp  — live Plasma session   (configure/rdp-server.sh)
 #     :3390  XRDP      — separate XFCE session  (this script)
 #   Both can't share 3389, so XRDP is moved to 3390.
 #

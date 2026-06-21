@@ -71,8 +71,8 @@ autologin.
   under `~/.local/share/krdpserver/` (openssl, 10y, key `chmod 600`) when absent
   — the same location/shape the System Settings KCM uses. Clients get a one-time
   trust warning; acceptable on LAN/tailnet.
-- **Privilege model:** `configure-ssh-server.sh` auto-sudos (system unit +
-  firewalld). `configure-rdp-server.sh` runs as the user and **refuses root**
+- **Privilege model:** `configure/ssh-server.sh` auto-sudos (system unit +
+  firewalld). `configure/rdp-server.sh` runs as the user and **refuses root**
   (config, certs, and the *user* systemd unit all live in `$HOME`); only its
   firewall step uses inline `sudo`.
 
