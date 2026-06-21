@@ -19,9 +19,10 @@
 #     5. user-manual-configure-ssh-server.sh                    (remote shell)
 #     6. user-manual-configure-rdp-server.sh                    (KDE only)
 #     7. user-manual-install-quick-access-terminal-shortcut.sh  (KDE only)
+#     8. user-manual-configure-default-terminal.sh              (KDE only)
 #
 #   HARDWARE-SPECIFIC (only with --with-nvidia — NEVER automatic):
-#     8. user-manual-install-nvidia-driver.sh  — DO NOT run on non-NVIDIA
+#     9. user-manual-install-nvidia-driver.sh  — DO NOT run on non-NVIDIA
 #        hardware (e.g. the AMD mini-PC). It blacklists nouveau for a Blackwell
 #        GPU and would be wrong elsewhere.
 #
@@ -163,6 +164,15 @@ if _is_kde; then
   fi
 else
   info "(not a KDE session — skipping the quick-access terminal shortcut)"
+fi
+
+if _is_kde; then
+  if _ask_optional "KDE default terminal = kitty (Ctrl+Alt+T → kitty, replaces Konsole)"; then
+    _run_child "Default terminal" "user-manual-configure-default-terminal.sh" "${_pass_through[@]}" \
+      || { warn "Default terminal step failed (continuing)."; _optional_failed=1; }
+  fi
+else
+  info "(not a KDE session — skipping the default-terminal config)"
 fi
 
 # ── HARDWARE-SPECIFIC (explicit opt-in only) ──────────────────────────────────
