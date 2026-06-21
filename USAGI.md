@@ -52,7 +52,7 @@ instead of the five individually.
 ## Step 1 — clone the repos
 
 ```bash
-mkdir -p ~/projects/repos && cd ~/projects/repos
+mkdir -p ~/projects && cd ~/projects
 git clone <remote>/fedora-setup.git
 git clone <remote>/dotfiles.git
 git clone <remote>/claude-setup.git
@@ -78,7 +78,7 @@ the five scripts below in order (NVIDIA omitted) and passes through `--dry-run` 
 `--no-prompt`:
 
 ```bash
-cd ~/projects/repos/fedora-setup
+cd ~/projects/fedora-setup
 ./setup-all.sh --dry-run          # preview EVERYTHING (shell + apps)
 ./setup-all.sh                    # the whole machine, prompts for optionals
 # …or just the shell environment:
@@ -144,7 +144,7 @@ Notes:
 hand for this layer. Two things to verify after Step 2:
 
 1. `~/.claude/settings.local.json` (deployed by Step 2.4) sets **`CLAUDE_SETUP_DIR`**.
-   Confirm it resolves to the usagi mini-PC's clone path: `~/projects/repos/claude-setup`.
+   Confirm it resolves to the usagi mini-PC's clone path: `~/projects/claude-setup`.
    This is the one genuinely machine-specific value in the deployed dotfiles —
    check it even though the dotfiles repo's convention is "no machine-specific
    values."
@@ -160,9 +160,9 @@ echo $SHELL                 # /bin/zsh
 exec zsh                    # land in zsh; starship prompt + tip rotator visible
 tools                       # the dotfiles cheatsheet function resolves
 command -v eza bat fd zoxide rg delta direnv fzf   # all present
-readlink ~/.zshrc           # → ~/projects/repos/dotfiles/.zshrc
+readlink ~/.zshrc           # → ~/projects/dotfiles/.zshrc
 readlink ~/.config/kitty/kitty.conf                # → dotfiles repo
-echo $CLAUDE_SETUP_DIR      # ~/projects/repos/claude-setup
+echo $CLAUDE_SETUP_DIR      # ~/projects/claude-setup
 ```
 
 ---
@@ -192,13 +192,13 @@ Handle them separately and deliberately:
 sudo hostnamectl set-hostname usagi
 
 # Step 1:
-mkdir -p ~/projects/repos && cd ~/projects/repos
+mkdir -p ~/projects && cd ~/projects
 git clone <remote>/fedora-setup.git
 git clone <remote>/dotfiles.git
 git clone <remote>/claude-setup.git
 
 # Step 2 (NVIDIA script intentionally omitted — AMD APU):
-cd ~/projects/repos/fedora-setup
+cd ~/projects/fedora-setup
 ./bootstrap-fedora.sh
 # optional: ./install/vscode.sh
 # optional (KDE): ./install/quick-access-terminal-shortcut.sh
