@@ -2,7 +2,7 @@
 # dotfiles/deploy.sh — Symlink every file in the dotfiles repo into ~/
 #
 # What this does:
-#   Walks the dotfiles repo (default: ~/projects/repos/dotfiles) and creates a
+#   Walks the dotfiles repo (default: ~/projects/dotfiles) and creates a
 #   symlink in $HOME for every regular file in it, preserving the file's
 #   path relative to the repo root. So:
 #     <dotfiles>/.zshrc           → ~/.zshrc
@@ -44,7 +44,7 @@
 set -euo pipefail
 
 # ── Defaults ─────────────────────────────────────────────────────────────────
-DOTFILES_DIR="$HOME/projects/repos/dotfiles"
+DOTFILES_DIR="$HOME/projects/dotfiles"
 
 # ── Flag parsing ─────────────────────────────────────────────────────────────
 _DRY_RUN=0

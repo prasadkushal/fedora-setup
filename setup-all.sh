@@ -33,7 +33,7 @@
 #   ./setup-all.sh --dry-run        # preview everything, change nothing
 #   ./setup-all.sh --no-prompt      # core only, optionals skipped
 #   ./setup-all.sh --with-nvidia    # also install the NVIDIA driver
-#   ./setup-all.sh --dotfiles-dir=~/projects/repos/dotfiles
+#   ./setup-all.sh --dotfiles-dir=~/projects/dotfiles
 #
 # Why no auto-sudo here: each child elevates itself when it needs root, and the
 # user-level children (bootstrap, uv, claude) refuse to run as root. So this

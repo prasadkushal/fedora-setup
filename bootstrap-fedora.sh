@@ -10,7 +10,7 @@
 #   ./bootstrap-fedora.sh                 # confirm before each step
 #   ./bootstrap-fedora.sh --dry-run       # preview (passed to children)
 #   ./bootstrap-fedora.sh --no-prompt     # run all 5, no gating
-#   ./bootstrap-fedora.sh --dotfiles-dir ~/projects/repos/dotfiles
+#   ./bootstrap-fedora.sh --dotfiles-dir ~/projects/dotfiles
 #
 # Why no auto-sudo here: only modern-cli-tools needs root and it re-execs
 # under sudo itself. The other four create files in the invoking user's HOME;

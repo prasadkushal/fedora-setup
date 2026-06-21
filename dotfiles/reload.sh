@@ -33,7 +33,7 @@
 set -euo pipefail
 
 # ── Defaults ─────────────────────────────────────────────────────────────────
-DOTFILES_DIR="$HOME/projects/repos/dotfiles"
+DOTFILES_DIR="$HOME/projects/dotfiles"
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ── Flag parsing ─────────────────────────────────────────────────────────────

@@ -143,7 +143,7 @@ Or run the five individually, in this order:
   (default: skip). No sudo. Supports `--dry-run` and `--no-prompt`.
 
 - [`configure/shell-to-zsh.sh`](configure/shell-to-zsh.sh)
-  — symlink `~/.zshenv` + `~/.zshrc` → `~/projects/repos/dotfiles/` (`.zshenv`
+  — symlink `~/.zshenv` + `~/.zshrc` → `~/projects/dotfiles/` (`.zshenv`
   holds PATH/env so `~/.local/bin` tools resolve in non-interactive shells too —
   ssh/cron/systemd; override the repo with `--dotfiles-dir`), append `shell
   /bin/zsh` to `~/.config/kitty/system.conf`
@@ -153,7 +153,7 @@ Or run the five individually, in this order:
   Supports `--dry-run` and `--no-prompt`.
 
 - [`dotfiles/deploy.sh`](dotfiles/deploy.sh) — walk the
-  dotfiles repo (default: `~/projects/repos/dotfiles`) and symlink every
+  dotfiles repo (default: `~/projects/dotfiles`) and symlink every
   regular file into the matching path under `~/`. So `<repo>/.zshrc` →
   `~/.zshrc`, `<repo>/.config/kitty/kitty.conf` → `~/.config/kitty/kitty.conf`,
   and so on. Skips `.git/`, `.gitignore`, `README.md`, `CLAUDE.md`, and
@@ -183,7 +183,7 @@ just run `setup-all.sh` (whole machine) or
 1. `install/modern-cli-tools.sh`
 2. `install/starship.sh`
 3. `install/zsh-plugins.sh`
-4. Clone the dotfiles repo to `~/projects/repos/dotfiles/`
+4. Clone the dotfiles repo to `~/projects/dotfiles/`
 5. `dotfiles/deploy.sh`
 6. `configure/shell-to-zsh.sh` (chsh; the kitty + .zshrc steps
    are no-ops at this point because step 5 already deployed them)

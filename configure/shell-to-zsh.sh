@@ -27,7 +27,7 @@
 #   - install/modern-cli-tools.sh   (installs zsh + tools)
 #   - install/starship.sh           (prompt)
 #   - install/zsh-plugins.sh        (autosuggestions / highlighting / completions)
-#   - A dotfiles repo clone at ~/projects/repos/dotfiles (default) with a
+#   - A dotfiles repo clone at ~/projects/dotfiles (default) with a
 #     .zshenv and .zshrc at its root. Override the location with --dotfiles-dir.
 #
 # Note: This script does NOT auto-sudo. chsh runs as the invoking user (PAM
@@ -36,7 +36,7 @@
 set -euo pipefail
 
 # ── Defaults ─────────────────────────────────────────────────────────────────
-DOTFILES_DIR="$HOME/projects/repos/dotfiles"
+DOTFILES_DIR="$HOME/projects/dotfiles"
 
 # ── Flag parsing ─────────────────────────────────────────────────────────────
 _DRY_RUN=0
