@@ -143,8 +143,10 @@ Or run the five individually, in this order:
   (default: skip). No sudo. Supports `--dry-run` and `--no-prompt`.
 
 - [`user-manual-configure-shell-to-zsh.sh`](user-manual-configure-shell-to-zsh.sh)
-  — symlink `~/.zshrc` → `~/projects/repos/dotfiles/.zshrc` (override with
-  `--dotfiles-dir`), append `shell /bin/zsh` to `~/.config/kitty/system.conf`
+  — symlink `~/.zshenv` + `~/.zshrc` → `~/projects/repos/dotfiles/` (`.zshenv`
+  holds PATH/env so `~/.local/bin` tools resolve in non-interactive shells too —
+  ssh/cron/systemd; override the repo with `--dotfiles-dir`), append `shell
+  /bin/zsh` to `~/.config/kitty/system.conf`
   if not already present (works around the kitty `$SHELL`-frozen-after-chsh
   gotcha), and run `chsh -s /bin/zsh`. The chsh step prompts for the user's
   password via PAM; it's skipped in `--no-prompt` mode with a warning.

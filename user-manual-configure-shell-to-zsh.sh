@@ -2,8 +2,11 @@
 # user-manual-configure-shell-to-zsh.sh — Flip the user's interactive shell to zsh
 #
 # What this does (three idempotent steps):
-#   1. Symlink ~/.zshrc → <dotfiles-repo>/.zshrc. If a regular file already
-#      exists, it's backed up with a timestamped .bak suffix first.
+#   1. Symlink ~/.zshenv and ~/.zshrc → <dotfiles-repo>/. PATH/env lives in
+#      .zshenv (sourced by every shell — interactive, ssh <host> <cmd>, cron,
+#      systemd units); interactive-only config lives in .zshrc. If a regular
+#      file already exists at either target, it's backed up with a timestamped
+#      .bak suffix first.
 #   2. Append `shell /bin/zsh` to ~/.config/kitty/system.conf if it isn't
 #      already present. This makes kitty launch zsh in new tabs regardless of
 #      the $SHELL env var (which is frozen at desktop-session start and
@@ -25,7 +28,7 @@
 #   - user-manual-install-starship.sh           (prompt)
 #   - user-manual-install-zsh-plugins.sh        (autosuggestions / highlighting / completions)
 #   - A dotfiles repo clone at ~/projects/repos/dotfiles (default) with a
-#     .zshrc at its root. Override the location with --dotfiles-dir if needed.
+#     .zshenv and .zshrc at its root. Override the location with --dotfiles-dir.
 #
 # Note: This script does NOT auto-sudo. chsh runs as the invoking user (PAM
 # prompts for their password); kitty.conf and ~/.zshrc are in the user's home.
@@ -82,60 +85,71 @@ command -v zsh &>/dev/null || die "zsh not found. Run user-manual-install-modern
 
 grep -q "^/bin/zsh$" /etc/shells || die "/bin/zsh missing from /etc/shells — chsh would refuse the change. Reinstall zsh or add /bin/zsh to /etc/shells."
 
-[ -f "$DOTFILES_DIR/.zshrc" ] || die "Dotfiles dir '$DOTFILES_DIR' missing .zshrc. Pass --dotfiles-dir=<path> to override."
+for _f in .zshenv .zshrc; do
+  [ -f "$DOTFILES_DIR/$_f" ] || die "Dotfiles dir '$DOTFILES_DIR' missing $_f. Pass --dotfiles-dir=<path> to override."
+done
 
 dryrun && warn "Running in --dry-run mode; no changes will be made."
 
-# ── Step 1: symlink ~/.zshrc → $DOTFILES_DIR/.zshrc ──────────────────────────
-TARGET="$HOME/.zshrc"
-SOURCE="$DOTFILES_DIR/.zshrc"
+# ── Step 1: symlink dotfiles (~/.zshenv + ~/.zshrc) → $DOTFILES_DIR ───────────
+# .zshenv carries PATH/env (sourced by every shell); .zshrc carries interactive
+# config. Both must be linked for the shell to work in every context.
+link_dotfile() {
+  local name="$1"
+  local TARGET="$HOME/$name"
+  local SOURCE="$DOTFILES_DIR/$name"
+  local current expected ts bak
 
-if [ -L "$TARGET" ]; then
-  current=$(readlink -f "$TARGET" 2>/dev/null || true)
-  expected=$(readlink -f "$SOURCE")
-  if [ "$current" = "$expected" ]; then
-    info "$TARGET already symlinks to $SOURCE — skipping."
-  else
-    warn "$TARGET symlinks to '$current' (expected '$expected')."
-    case "$(ask 'Replace symlink? [y/N/q]' 'n')" in
+  if [ -L "$TARGET" ]; then
+    current=$(readlink -f "$TARGET" 2>/dev/null || true)
+    expected=$(readlink -f "$SOURCE")
+    if [ "$current" = "$expected" ]; then
+      info "$TARGET already symlinks to $SOURCE — skipping."
+    else
+      warn "$TARGET symlinks to '$current' (expected '$expected')."
+      case "$(ask 'Replace symlink? [y/N/q]' 'n')" in
+        [Yy]*)
+          if dryrun; then
+            info "[DRY-RUN] would run: ln -sfn $SOURCE $TARGET"
+          else
+            ln -sfn "$SOURCE" "$TARGET"
+            info "Replaced symlink → $SOURCE"
+          fi
+          ;;
+        [Qq]*) die "Aborted by user." ;;
+        *)     info "Leaving symlink as-is." ;;
+      esac
+    fi
+  elif [ -e "$TARGET" ]; then
+    info "$TARGET is a regular file."
+    case "$(ask 'Back it up and replace with symlink? [Y/n/q]' 'y')" in
       [Yy]*)
+        ts=$(date +%Y-%m-%dT%H%M)
+        bak="${TARGET}.${ts}.bak"
         if dryrun; then
-          info "[DRY-RUN] would run: ln -sfn $SOURCE $TARGET"
+          info "[DRY-RUN] would back up $TARGET → $bak, then ln -s $SOURCE $TARGET"
         else
-          ln -sfn "$SOURCE" "$TARGET"
-          info "Replaced symlink → $SOURCE"
+          mv "$TARGET" "$bak"
+          ln -s "$SOURCE" "$TARGET"
+          info "Backed up to $bak; symlinked $TARGET → $SOURCE."
         fi
         ;;
       [Qq]*) die "Aborted by user." ;;
-      *)     info "Leaving symlink as-is." ;;
+      *)     info "Leaving $TARGET as a regular file." ;;
     esac
-  fi
-elif [ -e "$TARGET" ]; then
-  info "$TARGET is a regular file."
-  case "$(ask 'Back it up and replace with symlink? [Y/n/q]' 'y')" in
-    [Yy]*)
-      ts=$(date +%Y-%m-%dT%H%M)
-      bak="${TARGET}.${ts}.bak"
-      if dryrun; then
-        info "[DRY-RUN] would back up $TARGET → $bak, then ln -s $SOURCE $TARGET"
-      else
-        mv "$TARGET" "$bak"
-        ln -s "$SOURCE" "$TARGET"
-        info "Backed up to $bak; symlinked $TARGET → $SOURCE."
-      fi
-      ;;
-    [Qq]*) die "Aborted by user." ;;
-    *)     info "Leaving $TARGET as a regular file." ;;
-  esac
-else
-  info "$TARGET missing — creating symlink."
-  if dryrun; then
-    info "[DRY-RUN] would run: ln -s $SOURCE $TARGET"
   else
-    ln -s "$SOURCE" "$TARGET"
-    info "Symlinked $TARGET → $SOURCE."
+    info "$TARGET missing — creating symlink."
+    if dryrun; then
+      info "[DRY-RUN] would run: ln -s $SOURCE $TARGET"
+    else
+      ln -s "$SOURCE" "$TARGET"
+      info "Symlinked $TARGET → $SOURCE."
+    fi
   fi
-fi
+}
+
+link_dotfile .zshenv
+link_dotfile .zshrc
 
 # ── Step 2: kitty system.conf — `shell /bin/zsh` override ────────────────────
 KITTY_CONF="$HOME/.config/kitty/system.conf"
