@@ -113,6 +113,31 @@ symlinks into the repo, the pull updates your live config in place. The flow for
 a config change is: edit on machine A → commit & push (or let
 `reload-dotfiles` option 3 do it) → run `reload-dotfiles` on machine B.
 
+### Prime-hosted development workflow
+
+For the SSH-based workflow where `prime` is the authoritative code host and
+`usagi` is the client, finish usagi with its workstation-specific helper:
+
+```bash
+cd ~/projects/repos/fedora-setup/workstations/usagi
+./user-manual-finish-prime-ssh-workflow.sh --dry-run
+./user-manual-finish-prime-ssh-workflow.sh
+```
+
+This installs the usagi-side SSH/RDP client helpers, VS Code Remote SSH,
+Tailscale, and SSH aliases for `prime`. It does not enable an SSH server on
+usagi.
+
+Afterward:
+
+```bash
+ssh prime
+code --remote ssh-remote+prime /home/prime/projects/repos
+ssh -L 5173:127.0.0.1:5173 prime
+```
+
+With a dev server running on `prime`, open `http://127.0.0.1:5173` on `usagi`.
+
 ### Applications
 
 Reproduce the workstation's manually-installed apps with the orchestrator

@@ -9,6 +9,9 @@ One-off scripts and notes for setting up a Fedora workstation.
   workstation. Config reproduction (clone repos + run the bootstrap scripts),
   not a disk clone; the NVIDIA driver script is intentionally skipped because
   the SER6 has no NVIDIA GPU.
+- [`workstations/`](workstations/) — host-specific scripts and notes. Keep
+  reusable Fedora setup scripts in the repository root; put setup that only
+  applies to one device under `workstations/<hostname>/`.
 
 ## Planned Oaknet Backup Enrollment
 
@@ -104,6 +107,13 @@ One-off scripts and notes for setting up a Fedora workstation.
   `[services][…] _launch=Meta+Return` entry in `kglobalshortcutsrc`. Best-effort
   `kded6` reload at the end; log out / back in if the chord doesn't fire. No sudo.
   Supports `--dry-run` and `--no-prompt`.
+
+### Workstation-specific workflows
+
+- [`workstations/usagi/user-manual-finish-prime-ssh-workflow.sh`](workstations/usagi/user-manual-finish-prime-ssh-workflow.sh)
+  — finish `usagi` as a client for the primary `prime` workstation. It installs
+  client-side SSH/RDP helpers, VS Code Remote SSH, Tailscale, and SSH aliases for
+  `prime`, while leaving `prime` as the authoritative code workspace.
 
 ### zsh bootstrap
 

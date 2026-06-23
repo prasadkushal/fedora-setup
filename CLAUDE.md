@@ -6,6 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 One-off Fedora workstation setup scripts. Each script is independent, idempotent, and follows the folder + RUNTOOLS_AS_NONINTERACTIVE conventions documented in `~/.claude/CLAUDE.md`: scripts are grouped into `install/`, `configure/`, and `dotfiles/` folders (the path conveys the role, so no filename prefix), while the cross-category orchestrators (`setup-all.sh`, `bootstrap-fedora.sh`) live at the repo root. This repo is uniformly user-run, so it has no `user-manual/` direction folder.
 
+Reusable scripts live in the repository root (and its category folders).
+Workstation-specific scripts, templates, and notes live under
+`workstations/<hostname>/` so host-only setup does not leak into the shared
+parent script set.
+
 Current scripts:
 
 - `setup-all.sh` — **top-level orchestrator / single entry point.** Always runs the two core orchestrators (`bootstrap-fedora` then `install-apps`); gates the optionals (vscode, tailscale, KDE quick-access) with per-item prompts defaulting to No; runs the NVIDIA driver only with explicit `--with-nvidia` (never automatic — hardware-specific). `--no-prompt` → core only, optionals skipped. Runs as the user (children self-elevate; refuses root). --dry-run / --no-prompt / --with-nvidia / --dotfiles-dir=<path>. Idempotent (delegates to idempotent children).
@@ -34,6 +39,7 @@ Current scripts:
 - `install/uv.sh` — Astral `uv` (+`uvx`) to `~/.local/bin` via the official installer (starship-style; refuses root). --dry-run / --no-prompt.
 - `install/claude.sh` — Claude Code CLI via its official native installer to `~/.local/bin` (starship-style; refuses root; idempotent on `command -v claude`). --dry-run / --no-prompt.
 - `install/rmapi.sh` — `rmapi` reMarkable CLI: downloads the latest `ddvk/rmapi` release (maintained fork; original `juruen/rmapi` stalled at v0.0.25) for the host arch to `~/.local/bin`. No sudo; refuses root; idempotent (re-download prompt). --dry-run / --no-prompt.
+- `workstations/usagi/user-manual-finish-prime-ssh-workflow.sh` — usagi-only client workflow. Installs client SSH/RDP helpers, VS Code Remote SSH, Tailscale, and SSH aliases so usagi connects into the primary `prime` workspace. Does not enable an SSH server on usagi.
 
 ## Memory Location
 
@@ -77,3 +83,4 @@ Mirror the existing scripts:
 - New hardware/software install → new script (`install/<thing>.sh`).
 - Bug-fix or refinement to an existing install → modify the existing script.
 - Cross-cutting configuration (shell, dotfiles, etc.) → consider whether it belongs in `claude-setup/` or in a future `dotfiles/` repo instead.
+- Setup that only applies to one physical host/device → add it under `workstations/<hostname>/`, not in the root script list.

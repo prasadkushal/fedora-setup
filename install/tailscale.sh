@@ -179,14 +179,18 @@ if [ "$_state" = "Stopped" ]; then
   fi
 elif [ "${RUNTOOLS_AS_NONINTERACTIVE:-0}" = "1" ]; then
   # Logged out, unattended → needs a pre-generated auth key.
-  if [ -z "${TS_AUTHKEY:-}" ]; then
+  if dryrun; then
+    if [ -n "${TS_AUTHKEY:-}" ]; then
+      info "[DRY-RUN] would run: tailscale ${TS_UP_ARGS[*]} --authkey [REDACTED]"
+    else
+      info "[DRY-RUN] would require TS_AUTHKEY for unattended enrollment."
+    fi
+  elif [ -z "${TS_AUTHKEY:-}" ]; then
     die "Running non-interactively and this machine is logged out, but TS_AUTHKEY is not set.
        Generate an auth key at https://login.tailscale.com/admin/settings/keys
        then re-run:  TS_AUTHKEY=tskey-... $0 --no-prompt"
   fi
-  if dryrun; then
-    info "[DRY-RUN] would run: tailscale ${TS_UP_ARGS[*]} --authkey [REDACTED]"
-  else
+  if ! dryrun; then
     info "Enrolling unattended with TS_AUTHKEY..."
     tailscale "${TS_UP_ARGS[@]}" --authkey "$TS_AUTHKEY" || die "tailscale up failed."
   fi
