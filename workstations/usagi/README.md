@@ -7,7 +7,7 @@ Run this after the normal Fedora bootstrap has cloned `fedora-setup`:
 
 ```bash
 cd ~/projects/repos/fedora-setup/workstations/usagi
-./user-manual-finish-prime-ssh-workflow.sh
+./finish-prime-ssh-workflow.sh
 ```
 
 The script:

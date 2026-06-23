@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# user-manual-finish-prime-ssh-workflow.sh - Finish usagi as a client for prime
+# finish-prime-ssh-workflow.sh - Finish usagi as a client for prime
 #
 # What this does:
 #   Configures the Fedora mini-PC `usagi` to use `prime` as the primary
@@ -12,10 +12,10 @@
 #     5. Add SSH aliases for prime under ~/.ssh/config.d/.
 #
 # Usage:
-#   ./user-manual-finish-prime-ssh-workflow.sh
-#   ./user-manual-finish-prime-ssh-workflow.sh --dry-run
-#   ./user-manual-finish-prime-ssh-workflow.sh --no-prompt
-#   ./user-manual-finish-prime-ssh-workflow.sh --skip-vscode --skip-tailscale
+#   ./finish-prime-ssh-workflow.sh
+#   ./finish-prime-ssh-workflow.sh --dry-run
+#   ./finish-prime-ssh-workflow.sh --no-prompt
+#   ./finish-prime-ssh-workflow.sh --skip-vscode --skip-tailscale
 #
 # Direction:
 #   usagi -> SSH / VS Code Remote SSH / forwarded dev ports -> prime
@@ -198,7 +198,7 @@ write_prime_ssh_config() {
 
   tmp="$(mktemp)"
   {
-    printf '# Managed by fedora-setup/workstations/usagi/user-manual-finish-prime-ssh-workflow.sh\n'
+    printf '# Managed by fedora-setup/workstations/usagi/finish-prime-ssh-workflow.sh\n'
     printf '# prime is the authoritative development workspace for usagi.\n\n'
 
     printf 'Host prime prime-tailnet\n'

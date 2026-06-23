@@ -110,7 +110,7 @@ One-off scripts and notes for setting up a Fedora workstation.
 
 ### Workstation-specific workflows
 
-- [`workstations/usagi/user-manual-finish-prime-ssh-workflow.sh`](workstations/usagi/user-manual-finish-prime-ssh-workflow.sh)
+- [`workstations/usagi/finish-prime-ssh-workflow.sh`](workstations/usagi/finish-prime-ssh-workflow.sh)
   — finish `usagi` as a client for the primary `prime` workstation. It installs
   client-side SSH/RDP helpers, VS Code Remote SSH, Tailscale, and SSH aliases for
   `prime`, while leaving `prime` as the authoritative code workspace.

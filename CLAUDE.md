@@ -39,7 +39,7 @@ Current scripts:
 - `install/uv.sh` — Astral `uv` (+`uvx`) to `~/.local/bin` via the official installer (starship-style; refuses root). --dry-run / --no-prompt.
 - `install/claude.sh` — Claude Code CLI via its official native installer to `~/.local/bin` (starship-style; refuses root; idempotent on `command -v claude`). --dry-run / --no-prompt.
 - `install/rmapi.sh` — `rmapi` reMarkable CLI: downloads the latest `ddvk/rmapi` release (maintained fork; original `juruen/rmapi` stalled at v0.0.25) for the host arch to `~/.local/bin`. No sudo; refuses root; idempotent (re-download prompt). --dry-run / --no-prompt.
-- `workstations/usagi/user-manual-finish-prime-ssh-workflow.sh` — usagi-only client workflow. Installs client SSH/RDP helpers, VS Code Remote SSH, Tailscale, and SSH aliases so usagi connects into the primary `prime` workspace. Does not enable an SSH server on usagi.
+- `workstations/usagi/finish-prime-ssh-workflow.sh` — usagi-only client workflow. Installs client SSH/RDP helpers, VS Code Remote SSH, Tailscale, and SSH aliases so usagi connects into the primary `prime` workspace. Does not enable an SSH server on usagi.
 
 ## Memory Location
 

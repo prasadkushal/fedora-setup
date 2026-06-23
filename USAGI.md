@@ -120,8 +120,8 @@ For the SSH-based workflow where `prime` is the authoritative code host and
 
 ```bash
 cd ~/projects/repos/fedora-setup/workstations/usagi
-./user-manual-finish-prime-ssh-workflow.sh --dry-run
-./user-manual-finish-prime-ssh-workflow.sh
+./finish-prime-ssh-workflow.sh --dry-run
+./finish-prime-ssh-workflow.sh
 ```
 
 This installs the usagi-side SSH/RDP client helpers, VS Code Remote SSH,
