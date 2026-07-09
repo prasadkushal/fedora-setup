@@ -183,6 +183,25 @@ done < <(find "$DOTFILES_DIR" -type f \
   ! -name 'settings.local.json' \
   -print0)
 
+# ── Harden perms on sensitive files ──────────────────────────────────────────
+# git only records the executable bit (0644 vs 0755), so a fresh clone restores
+# these to 0644 no matter what mode they had when committed. Since they are
+# symlinked into ~/, `chmod` follows the link and fixes the mode on the repo
+# file the link resolves to. SSH ignores an over-permissive *client* config, but
+# 0600 keeps its contents (internal hostnames, jump hosts) from other local
+# users. Paths are relative to the dotfiles repo; missing ones are skipped.
+SENSITIVE_600=(".ssh/config")
+
+for rel in "${SENSITIVE_600[@]}"; do
+  f="$DOTFILES_DIR/$rel"
+  [ -f "$f" ] || continue
+  if dryrun; then
+    info "[DRY-RUN] would chmod 600 $f"
+  else
+    chmod 600 "$f" && info "Hardened perms (600): $rel"
+  fi
+done
+
 # ── Summary ──────────────────────────────────────────────────────────────────
 echo ""
 if dryrun; then
